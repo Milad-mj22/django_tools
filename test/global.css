@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  /* fonts */
+  --font-epilogue: Epilogue;
+
+  /* font sizes */
+  --font-size-base: 16px;
+  --font-size-5xl: 24px;
+
+  /* Colors */
+  --color-white: #fff;
+  --color-dimgray: #555;
+  --color-darkslategray: #333;
+
+  /* border radiuses */
+  --br-base: 16px;
+}
