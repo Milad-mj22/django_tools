@@ -10,6 +10,7 @@ from users.views import CustomLoginView, ResetPasswordView, ChangePasswordView
 
 from users.forms import LoginForm
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -33,5 +34,6 @@ urlpatterns = [
     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
 
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

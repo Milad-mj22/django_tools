@@ -7,6 +7,8 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
+from django.views import generic
+from .models import Post
 
 import numpy as np
 
@@ -104,3 +106,13 @@ def tools(request):
     print('show tools page')
     messages.success(request, 'debugging')
     return render(request, 'users/tools.html',{'content':document})
+
+
+
+class PostList(generic.ListView):
+    queryset = Post.objects.filter(status=1).order_by('-created_on')
+    template_name = 'index.html'
+
+class PostDetail(generic.DetailView):
+    model = Post
+    template_name = 'users/post_detail.html'
