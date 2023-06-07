@@ -29,8 +29,6 @@ class Profile(models.Model):
 
 # blog section
 
-from django.db import models
-from django.contrib.auth.models import User
 
 
 STATUS = (
@@ -49,6 +47,21 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_on']
+
+    def __str__(self):
+        return self.title
+
+
+class Tools(models.Model):
+    title = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
+    # author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts')
+    content = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(choices=STATUS, default=0)
+    image = models.ImageField(default='default.jpg', upload_to='tools_images')
+    class Meta:
+        ordering = ['-title']
 
     def __str__(self):
         return self.title

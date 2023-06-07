@@ -1,0 +1,76 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% block content %}
+{% load static %}
+<link href="{% static 'css\index.css' %}" rel="stylesheet">
+<body>
+  <div class="inside-openart">
+    <img class="inside-openart-child" alt="" src="{% static 'icons\group-3.svg' %}" />
+
+    <div class="test">
+      <h1> مجموعه ابزار ها</h1>
+      <div class="inside-openart-item"></div>
+      <div class="inside-openart-inner"></div>
+      <div class="rectangle-div"></div>
+      <div class="inside-openart-child1"></div>
+      <div class="inside-openart-child2"></div>
+      <div class="inside-openart-child3"></div>
+      <img class="prison-icon" alt="" src="{% static 'icons\prison.svg' %}" />
+
+      <img class="color-dropper-icon" alt="" src="{% static 'icons\color-dropper.svg' %}" />
+
+      <img class="text-color-icon" alt="" src="{% static 'icons\text-color.svg' %}" />
+
+      <img class="toggle-on-icon" alt="" src="{% static 'icons\toggle-on.svg' %}" />
+
+      <img class="design-icon" alt="" src="{% static 'icons\design.svg' %}" />
+
+      <img class="four-squares-icon" alt="" src="{% static 'icons\four-squares.svg' %}" />
+
+      <div class="documents"  >{{content}}</div>
+      <div class="spare">spare</div>
+      <div class="spare-2">spare 2</div>
+      <div class="spare-3">spare 3</div>
+      <div class="lens-selector">lens selector</div>
+      <div class="blur-computing">blur computing</div>
+      <div class="openart-use-epilogue-container">
+        <p class="openart-use-epilogue">OpenArt use Epilogue font family</p>
+        <p class="openart-use-epilogue">
+          Available with open licence in gooogle font
+        </p>
+      </div>
+      <div class="all-color-in-container">
+          <button type="button" class="btn-tool" >
+            <span> All color in OpenArt are styled. You can change all </span>
+          </button>
+      </div>
+      <div class="base-on-4pt-container">
+        <button type="button" class="btn-tool" >
+          <span> on 4pt grid system. Our UI kit help you create <br> perfect white space </span>
+        </button>
+        <!-- <button class="btn-openart-use-epilogue">perfect white space</button> -->
+      </div>
+      <div class="our-ui-kit-container">
+        <button type="button" class="btn-tool" >
+          <span> Our UI Kit support darkmode <br> perfect white space </span>
+        </button>
+
+      </div>
+      <div class="create-any-design">
+        <button type="button" class="btn-tool" >
+          <span> Create any design with OpenArt UI kitse </span>
+        </button>
+        
+      </div>
+      <div class="all-component-art-container">
+        <p class="openart-use-epilogue">
+          All component art variant, easy to design,
+        </p>
+        <p class="openart-use-epilogue">easy to control</p>
+      </div>
+    </div>
+  
+  </div>
+</body>
+
+{% endblock content %}

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import Post
+from .models import Post,Tools
 
 import numpy as np
 
@@ -99,14 +99,6 @@ def profile(request):
 
         return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
-@login_required
-def tools(request):
-    var = np.random.randint(10,100)
-    document = str(var)
-    print('show tools page')
-    messages.success(request, 'debugging')
-    return render(request, 'users/tools.html',{'content':document})
-
 
 
 class PostList(generic.ListView):
@@ -116,3 +108,21 @@ class PostList(generic.ListView):
 class PostDetail(generic.DetailView):
     model = Post
     template_name = 'users/post_detail.html'
+
+
+
+class toolslist(generic.ListView):
+    queryset = Post.objects.filter(status=1).order_by('-created_on')
+    template_name = 'tools.html'
+
+
+@login_required
+def tools(request):
+    # toolslist.as_view()
+    queryset = Tools.objects.filter(status=1).order_by('-created_on')
+    print('queryset',queryset)
+    print('show tools page')
+    
+    # messages.success(request, 'debugging')
+    return render(request, 'users/tools.html',{'tools':queryset})
+

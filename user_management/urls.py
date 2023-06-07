@@ -14,7 +14,7 @@ from users.forms import LoginForm
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', include('users.urls')),
+    
 
     path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, template_name='users/login.html',
                                            authentication_form=LoginForm), name='login'),
@@ -32,6 +32,7 @@ urlpatterns = [
          name='password_reset_complete'),
 
     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
+    path('', include('users.urls')),
 
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
 
