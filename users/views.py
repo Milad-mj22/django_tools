@@ -119,10 +119,10 @@ class toolslist(generic.ListView):
 @login_required
 def tools(request):
     # toolslist.as_view()
-    queryset = Tools.objects.filter(status=1).order_by('-created_on')
+    queryset = Tools.objects.filter(status=1).order_by('-title').reverse()
     print('queryset',queryset)
     print('show tools page')
     
     # messages.success(request, 'debugging')
-    return render(request, 'users/tools.html',{'tools':queryset})
+    return render(request, 'users/tools_new.html',{'tools':queryset})
 

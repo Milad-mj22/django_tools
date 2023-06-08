@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
-
+from django.urls import reverse
 
 # Extending User Model Using a One-To-One Link
 class Profile(models.Model):
@@ -50,6 +50,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        print(reverse("blog/", kwargs={"slug": self.slug}))
+        # asd
+        return "blog/"+{"slug": self.slug}
+
 
 
 class Tools(models.Model):
