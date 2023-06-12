@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .models import Profile
+from .models import Profile,Post_quill
 
 
 class RegisterForm(UserCreationForm):
@@ -86,3 +86,29 @@ class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['avatar', 'bio']
+
+
+
+from django import forms
+from django_quill.forms import QuillFormField
+
+class QuillFieldForm(forms.Form):
+    content = QuillFormField()
+
+from django import forms
+from .models import QuillPost
+
+class QuillPostForm(forms.ModelForm):
+    class Meta:
+        model = QuillPost
+        fields = (
+            'content',
+        )
+
+
+
+
+class PostForm(forms.ModelForm):
+   class Meta:
+      model = Post_quill
+      fields = ['title', 'body']

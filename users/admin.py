@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Profile
-from .models import Post,Tools
+from .models import Post,Tools,Post_quill
 
 
 admin.site.register(Profile)
@@ -17,3 +17,14 @@ admin.site.register(Tools)
 
 
 
+from django.contrib import admin
+from .models import QuillPost
+
+@admin.register(QuillPost)
+class QuillPostAdmin(admin.ModelAdmin):
+    pass
+
+
+
+
+admin.site.register(Post_quill)

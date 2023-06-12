@@ -1,0 +1,9 @@
+<head>
+    {% for info in post %}
+    <title>{{info.title}}</title>
+</head>
+<body>
+    <h1 style="text-align: center;"><u>{{info.title}}</u></h1>
+    {{info.body.html | safe}}
+    {% endfor %}
+</body>

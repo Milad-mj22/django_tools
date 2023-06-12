@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import Post,Tools
+from .models import Post,Tools,Post_quill
 
 import numpy as np
 
@@ -126,3 +126,40 @@ def tools(request):
     # messages.success(request, 'debugging')
     return render(request, 'users/tools_new.html',{'tools':queryset})
 
+
+from django.shortcuts import render
+from .forms import QuillPostForm
+
+def model_form_view(request):
+    print(QuillPostForm())
+    return render(request, 'users/form_view.html', {'form': QuillPostForm()})
+
+
+
+from django.http import HttpResponse
+from .forms import PostForm
+
+
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('New Forum Successfully Added')
+    else:
+        form = PostForm()
+        context = {
+            'form':form
+        }
+
+    return render(request, 'users/form_view.html', context)
+
+
+
+def post_list_quil(request):
+    post_list = Post_quill.objects.all()
+    return render(request, 'users/post_list_quil.html', {'posts': post_list})
+
+def post_view_quil(request,post_id):
+    post_view = Post_quill.objects.filter(id=post_id)
+    return render(request, 'users/post_view.html', {'post': post_view})

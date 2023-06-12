@@ -41,8 +41,7 @@
                     <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
                    <!-- asdada -->
                     <p class="card-text">{{post.content|slice:":200" }}</p>
-                    <!-- <a href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a> -->
-                    <a href="/blog/{{ post.slug }}" class="btn btn-primary">Read More &rarr;</a>
+                    <a href="/blog/{{post.slug}}" class="btn btn-primary">Read More &rarr;</a>
                 </div>
             </div>
             {% endfor %}
