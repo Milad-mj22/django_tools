@@ -1,44 +1,106 @@
 {% extends "users/base.html" %}
-{% block title %}Profile Page{% endblock title %}
+{% block title %} Home Page {% endblock title%}
 {% block content %}
-    <div class="row my-3 p-3">
-        <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} " style="cursor: pointer;"/>
-    </div>
-    {% if user_form.errors %}
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <div id="form_errors">
-                {% for key, value in user_form.errors.items %}
-                    <strong>{{ value }}</strong>
-                {% endfor %}
+{% include 'users/side_panel_profile.html' %}
+{% load static %}
+<link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+
+  
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+</head>
+<body>
+    <!-- Main -->
+    <div class="main">
+        <h2>User Account</h2>
+        <div class="card">
+            <div class="card-body">
+                <i class="fa fa-pen fa-xs edit"></i>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td>:</td>
+                            <td>{{user.first_name}}  {{ user.last_name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>:</td>
+                            <td>{{user.email }}</td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>:</td>
+                            <td>{{user.address}}</td>
+                        </tr>
+                        <tr>
+                            <td>Job</td>
+                            <td>:</td>
+                            <td>{{user.job}}</td>
+                        </tr>
+                        <tr>
+                            <td>Skill</td>
+                            <td>:</td>
+                            <td>{{user.skill}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
-    {% endif %}
-    <div class="form-content">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label class="small mb-1">Username:</label>
-                            {{ user_form.username }}
-                        <label class="small mb-1">Email:</label>
-                            {{ user_form.email }}
-                    </div>
-                    <div class="form-group">
-                        <a href="{% url 'password_change' %}">Change Password</a>
-                        <hr>
-                        <label class="small mb-1">Change Avatar:</label>
-                        {{ profile_form.avatar }}
-                    </div>
-                    <label class="small mb-1">Bio:</label> {{ profile_form.bio }}
+
+        <h2>SOCIAL MEDIA</h2>
+        <div class="card">
+            <div class="card-body">
+                <i class="fa fa-pen fa-xs edit"></i>
+                <div class="social-media">
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-invision fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-whatsapp fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="fa-stack fa-sm">
+                        <i class="fas fa-circle fa-stack-2x"></i>
+                        <i class="fab fa-snapchat fa-stack-1x fa-inverse"></i>
+                    </span>
                 </div>
             </div>
-            <br><br>
-            <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
-            <button type="reset" class="btn btn-dark btn-lg">Reset</button>
-        </form>
+        </div>
     </div>
-{% endblock content %}
+    <!-- End -->
+</body>
+</html>
+
+{%endblock%}
+
+
+
+
+
+

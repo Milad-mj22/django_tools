@@ -8,5 +8,5 @@ urlpatterns = [
     path('tools/',tools, name='tools'),
     path('tools_new/',tools, name='tools'),
     path('blog/', PostList.as_view(), name='blog'),
-    path('<slug:slug>/',PostDetail.as_view(), name='post_detail'),
+    path('blog/<slug:slug>/',PostDetail.as_view(), name='post_detail'),
 ]
