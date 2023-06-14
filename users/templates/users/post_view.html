@@ -1,9 +1,32 @@
+
+{% extends 'users/base.html' %} {% block content %}
+{% load static %}
+<link href="//cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
+<script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
+<link href="{% static 'css\post_view.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+
 <head>
     {% for info in post %}
     <title>{{info.title}}</title>
+    <h1 style="text-align: center;"><u>{{info.title}}</u></h1>
 </head>
 <body>
-    <h1 style="text-align: center;"><u>{{info.title}}</u></h1>
-    {{info.body.html | safe}}
-    {% endfor %}
+    <div class="container">
+    <div class="row">
+        <div class="col-md-8 card mb-4  mt-3 left  top">
+        <div class="card-body">
+            <h1>{% block title %} {{ object.title }} {% endblock title %}</h1>
+            <p class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
+            <p class="card-text ">{{ object.content | safe }}</p>
+            {{info.body.html | safe}}
+            {% endfor %}
+
+        </div>
+        </div>
+        {% block sidebar %} {% include 'users/sidebar.html' %} {% endblock sidebar %}
+    </div>
+    </div>
 </body>
+
+{% endblock content %}

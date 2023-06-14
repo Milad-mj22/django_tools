@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from PIL import Image
 from django.urls import reverse
 
+
+
+
+
 # Extending User Model Using a One-To-One Link
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -77,15 +81,45 @@ class Tools(models.Model):
 from django.db import models
 from django_quill.fields import QuillField
 
+
+from django.db import models
+from tinymce import models as tinymce_models
+
 class QuillPost(models.Model):
     content = QuillField()
 
 
 class Post_quill(models.Model):
     title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts_quil',default=1,blank=True,null=True)
     body = QuillField()
+    # my_field = tinymce_models.HTMLField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title    
+    
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+
+
+
+class post_tinymce(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts_tinymce',default=1,blank=True,null=True)
+    my_field = tinymce_models.HTMLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title    
+    
+
+    class Meta:
+        ordering = ['-created_at']

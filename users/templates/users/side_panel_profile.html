@@ -1,6 +1,6 @@
 <div class="sidenav">
     <div class="profile">
-        <img src="{{ user.profile.avatar.url }} " alt="" width="100" height="100">
+        <img src="{{ user.profile.avatar.url }} " alt="" width="100" height="130">
 
         <div class="name">
             {{user.first_name}} {{ user.last_name}}
@@ -12,11 +12,19 @@
 
     <div class="sidenav-url">
         <div class="url">
-            <a href="#profile" class="active">Profile</a>
+            <a href="/profile" class="active">Profile</a>
             <hr align="center">
         </div>
         <div class="url">
-            <a href="#settings">Posts</a>
+            <a href="/profile/create_post">Create Posts</a>
+            <hr align="center">
+        </div>
+        <div class="url">
+            <a href="/profile/my_posts">My Posts</a>
+            <hr align="center">
+        </div>
+        <div class="url">
+            <a href="/test">test</a>
             <hr align="center">
         </div>
     </div>

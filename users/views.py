@@ -140,19 +140,41 @@ from django.http import HttpResponse
 from .forms import PostForm
 
 
+@login_required
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse('New Forum Successfully Added')
+            # return HttpResponse('New Forum Successfully Added')
+        
+            messages.success(request,'New Forum Successfully Added')
+            return redirect(to='/profile')
+
     else:
         form = PostForm()
         context = {
             'form':form
         }
 
-    return render(request, 'users/form_view.html', context)
+    return render(request, 'users/create_post.html', context)
+
+
+
+
+
+
+@login_required
+def my_posts(request):
+    post_list = Post_quill.objects.filter(author = request.user.id)
+    return render(request, 'users/user_post_list_quil.html', {'posts': post_list})
+
+
+
+
+
+
+
 
 
 
@@ -160,6 +182,39 @@ def post_list_quil(request):
     post_list = Post_quill.objects.all()
     return render(request, 'users/post_list_quil.html', {'posts': post_list})
 
-def post_view_quil(request,post_id):
-    post_view = Post_quill.objects.filter(id=post_id)
+def post_view_quil(request,slug):
+    post_view = Post_quill.objects.filter(slug=slug)
     return render(request, 'users/post_view.html', {'post': post_view})
+
+
+
+
+from django.shortcuts import get_object_or_404
+@login_required
+def post_edit_quil(request,id):
+    post = get_object_or_404(Post_quill,id=id)
+
+    if request.method == 'GET':
+
+        context = {'form': PostForm(instance=post), 'id': id}
+        return render(request,'users/create_post.html',context)
+
+   
+    elif request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'The post has been updated successfully.')
+            return redirect('/profile/my_posts')
+        else:
+            messages.error(request, 'Please correct the following errors:')
+            return render(request,'posts/post_form.html',{'form':form})
+        
+
+
+def test(request):
+    return render(request, 'users/test.html')
+
+
+
+

@@ -111,4 +111,11 @@ class QuillPostForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
    class Meta:
       model = Post_quill
-      fields = ['title', 'body']
+      fields = ['slug','title', 'body','author']
+
+
+
+# from .models import 
+
+
+
