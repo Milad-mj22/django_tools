@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Profile
-from .models import Post,Tools,Post_quill
+from .models import Post,Tools,Post_quill , jobs
 
 
 import enchant
@@ -33,6 +33,7 @@ admin.site.register(Post_quill)
 
 
 
+
 from .models import full_post
 from django.db import models
 from tinymce.widgets import TinyMCE
@@ -46,3 +47,8 @@ class textEditorAdmin(admin.ModelAdmin):
 
 
 admin.site.register(full_post, textEditorAdmin)
+
+
+
+
+admin.site.register(jobs)

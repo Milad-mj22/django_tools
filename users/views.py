@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
 from .forms import PostForm,PostForm_tinymce
-from .models import User
+from .models import User,jobs
 
 
 
@@ -22,6 +22,8 @@ def home(request):
 
 
 class RegisterView(View):
+    a = jobs.objects.all()
+    print(a)
     form_class = RegisterForm
     initial = {'key': 'value'}
     template_name = 'users/register.html'
@@ -42,6 +44,11 @@ class RegisterView(View):
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            # form.save()
+
+
+            obj =form.save(commit=False)
+            obj.author = User.objects.get(pk=request.user.id)
             form.save()
 
             username = form.cleaned_data.get('username')

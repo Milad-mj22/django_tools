@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .models import Profile,Post_quill
+from .models import Profile,Post_quill,jobs
 
 
 class RegisterForm(UserCreationForm):
@@ -26,14 +26,12 @@ class RegisterForm(UserCreationForm):
                              widget=forms.TextInput(attrs={'placeholder': 'Email',
                                                            'class': 'form-control',
                                                            }))
-    
+    BIRTH_YEAR_CHOICES = ["1980", "1981", "1982"]
+    CHOICES = (('Option 1', 'Option 1'),('Option 2', 'Option 2'),)
+    a = jobs.objects.values_list('id','name')
+    print(a)
+    job_position = forms.ChoiceField(choices=a)
 
-    job_position = forms.CharField(max_length=100,
-                               required=False,
-                               widget=forms.TextInput(attrs={'placeholder': 'Job position',
-                                                             'class': 'form-control',
-                                                             }))
-    
 
     password1 = forms.CharField(max_length=50,
                                 required=True,
@@ -53,6 +51,10 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2','job_position']
+
+
+
+
 
 
 class LoginForm(AuthenticationForm):
