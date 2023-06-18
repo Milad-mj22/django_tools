@@ -8,9 +8,14 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.views import generic
-from .models import Post,Tools,Post_quill
-
+from .models import Post,Tools,full_post
+from django.shortcuts import get_object_or_404
 import numpy as np
+from django.http import HttpResponse
+from .forms import PostForm,PostForm_tinymce
+from .models import User
+
+
 
 def home(request):
     return render(request, 'users/home.html')
@@ -101,107 +106,65 @@ def profile(request):
 
 
 
-class PostList(generic.ListView):
-    queryset = Post.objects.filter(status=1).order_by('-created_on')
-    template_name = 'index.html'
+# class PostList(generic.ListView):
+#     queryset = Post.objects.filter(status=1).order_by('-created_on')
+#     template_name = 'index.html'
 
-class PostDetail(generic.DetailView):
-    model = Post
-    template_name = 'users/post_detail.html'
-
-
-
-class toolslist(generic.ListView):
-    queryset = Post.objects.filter(status=1).order_by('-created_on')
-    template_name = 'tools.html'
+# class PostDetail(generic.DetailView):
+#     model = Post
+#     template_name = 'users/post_detail.html'
 
 
 @login_required
 def tools(request):
-    # toolslist.as_view()
     queryset = Tools.objects.filter(status=1).order_by('-title').reverse()
     print('queryset',queryset)
     print('show tools page')
     
-    # messages.success(request, 'debugging')
     return render(request, 'users/tools_new.html',{'tools':queryset})
 
 
-from django.shortcuts import render
-from .forms import QuillPostForm
-
-def model_form_view(request):
-    print(QuillPostForm())
-    return render(request, 'users/form_view.html', {'form': QuillPostForm()})
-
-
-
-from django.http import HttpResponse
-from .forms import PostForm
-
-
 @login_required
-def create_post(request):
+def full_create_post_tiny(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm_tinymce(request.POST)
         if form.is_valid():
+            obj =form.save(commit=False)
+            obj.author = User.objects.get(pk=request.user.id)
             form.save()
-            # return HttpResponse('New Forum Successfully Added')
-        
             messages.success(request,'New Forum Successfully Added')
             return redirect(to='/profile')
-
+        
+        else:
+            messages.error(request, 'Please correct the following errors:')
+            return render(request,'users/create_post.html',{'form':form})
+        
     else:
-        form = PostForm()
+        form = PostForm_tinymce()
         context = {
             'form':form
         }
-
-    return render(request, 'users/create_post.html', context)
-
-
-
-
+        return render(request, 'users/create_post.html',context)
 
 
 @login_required
 def my_posts(request):
-    post_list = Post_quill.objects.filter(author = request.user.id)
+    post_list = full_post.objects.filter(author = request.user.id)
     return render(request, 'users/user_post_list_quil.html', {'posts': post_list})
 
 
-
-
-
-
-
-
-
-
-def post_list_quil(request):
-    post_list = Post_quill.objects.all()
-    return render(request, 'users/post_list_quil.html', {'posts': post_list})
-
-def post_view_quil(request,slug):
-    post_view = Post_quill.objects.filter(slug=slug)
-    return render(request, 'users/post_view.html', {'post': post_view})
-
-
-
-
-from django.shortcuts import get_object_or_404
 @login_required
 def post_edit_quil(request,id):
-    post = get_object_or_404(Post_quill,id=id)
+    post = get_object_or_404(full_post,id=id)
 
     if request.method == 'GET':
 
-        context = {'form': PostForm(instance=post), 'id': id}
+        context = {'form': PostForm_tinymce(instance=post), 'id': id}
         return render(request,'users/create_post.html',context)
 
    
     elif request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm_tinymce(request.POST, instance=post)
         if form.is_valid():
             form.save()
             messages.success(request, 'The post has been updated successfully.')
@@ -212,9 +175,15 @@ def post_edit_quil(request,id):
         
 
 
-def test(request):
-    return render(request, 'users/test.html')
 
 
+def post_list_quil(request):
+    post_list = full_post.objects.all()
+    return render(request, 'users/post_list_quil.html', {'posts': post_list})
+
+def post_view_quil(request,slug):
+    print('a'*80)
+    post_view = full_post.objects.filter(slug=slug)
+    return render(request, 'users/post_view.html', {'post': post_view})
 
 

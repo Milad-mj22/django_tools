@@ -3,6 +3,10 @@ from .models import Profile
 from .models import Post,Tools,Post_quill
 
 
+import enchant
+enchant.dict_exists('en')
+
+
 admin.site.register(Profile)
 
 class PostAdmin(admin.ModelAdmin):
@@ -25,26 +29,20 @@ class QuillPostAdmin(admin.ModelAdmin):
     pass
 
 
-
-
 admin.site.register(Post_quill)
 
 
-# from django import forms
-# from django.contrib.flatpages.admin import FlatPageAdmin
-# from django.contrib.flatpages.models import FlatPage
-# from django.urls import reverse
-# from tinymce.widgets import TinyMCE
 
-# class TinyMCEFlatPageAdmin(FlatPageAdmin):
-#     def formfield_for_dbfield(self, db_field, **kwargs):
-#         if db_field.name == 'content':
-#             return db_field.formfield(widget=TinyMCE(
-#                 attrs={'cols': 80, 'rows': 30},
-#                 mce_attrs={'external_link_list_url': reverse('tinymce-linklist')},
-#             ))
-#         return super().formfield_for_dbfield(db_field, **kwargs)
+from .models import full_post
+from django.db import models
+from tinymce.widgets import TinyMCE
+
+  
+class textEditorAdmin(admin.ModelAdmin):
+   list_display = ["title"]
+   formfield_overrides = {
+   models.TextField: {'widget': TinyMCE()}
+   }
 
 
-# admin.site.unregister(FlatPage)
-# admin.site.register(FlatPage, TinyMCEFlatPageAdmin)
+admin.site.register(full_post, textEditorAdmin)

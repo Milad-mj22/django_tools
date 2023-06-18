@@ -37,7 +37,7 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -56,8 +56,6 @@ INSTALLED_APPS = [
     'social_django',
     'django_quill',
     'tinymce',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -185,7 +183,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 TINYMCE_DEFAULT_CONFIG = {
     'cleanup_on_startup': True,

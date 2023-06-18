@@ -26,6 +26,15 @@ class RegisterForm(UserCreationForm):
                              widget=forms.TextInput(attrs={'placeholder': 'Email',
                                                            'class': 'form-control',
                                                            }))
+    
+
+    job_position = forms.CharField(max_length=100,
+                               required=False,
+                               widget=forms.TextInput(attrs={'placeholder': 'Job position',
+                                                             'class': 'form-control',
+                                                             }))
+    
+
     password1 = forms.CharField(max_length=50,
                                 required=True,
                                 widget=forms.PasswordInput(attrs={'placeholder': 'Password',
@@ -43,7 +52,7 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2','job_position']
 
 
 class LoginForm(AuthenticationForm):
@@ -96,7 +105,7 @@ class QuillFieldForm(forms.Form):
     content = QuillFormField()
 
 from django import forms
-from .models import QuillPost
+from .models import QuillPost , full_post
 
 class QuillPostForm(forms.ModelForm):
     class Meta:
@@ -115,7 +124,35 @@ class PostForm(forms.ModelForm):
 
 
 
-# from .models import 
+
+class full_PostForm(forms.ModelForm):
+   class Meta:
+      model = Post_quill
+      fields = ['slug','title', 'body','author']
 
 
+from django import forms
+# from django.contrib.flatpages.models import FlatPage
+# from tinymce.widgets import TinyMCE
+
+from django.forms import ModelForm, TextInput, EmailInput , CharField ,SlugField
+
+class PostForm_tinymce(forms.ModelForm):
+    class Meta:
+        model = full_post
+        fields = ['slug','title', 'content']
+
+        widgets = {
+            'title': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'title'
+                }),
+            'slug': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Url'
+                }),
+            # 'author':forms.HiddenInput(),
+        }
 

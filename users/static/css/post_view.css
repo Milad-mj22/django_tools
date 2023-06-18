@@ -10,7 +10,7 @@
     body {
         background-color: #e8f5ff;
         font-family: Arial;
-        overflow: hidden;
+        /* overflow: hidden; */
     }
     
     /* NavbarTop */
@@ -127,10 +127,10 @@
     /* Main */
     .main {
         margin-top: 2%;
-        margin-left: 29%;
+        /* margin-left: 29%; */
         font-size: 28px;
         padding: 0 10px;
-        width: 58%;
+        width: 80%;
     }
     
     .main h2 {

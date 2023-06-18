@@ -15,10 +15,10 @@
             {% for post in posts %}
             <div class="card mb-4">
                 <div class="card-body">
-                    <h2 class="card-title">{{ post.slug }}</h2>
+                    <h2 class="card-title">{{ post.title }}</h2>
                     <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
                    <!-- asdada -->
-                    <p class="card-text">{{post.title|slice:":200" }}</p>
+                    <p class="card-text">{{post.slug|slice:":200" }}</p>
                     <a href="/posts/{{post.slug}}" class="btn btn-primary">Read More &rarr;</a>
                     <a href="/posts/edit/{{post.id}}" class="btn btn-primary">Edit &rarr;</a>
                 </div>

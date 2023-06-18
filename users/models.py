@@ -30,11 +30,6 @@ class Profile(models.Model):
 
 
 
-
-# blog section
-
-
-
 STATUS = (
     (0,"Draft"),
     (1,"Publish")
@@ -85,6 +80,7 @@ from django_quill.fields import QuillField
 from django.db import models
 from tinymce import models as tinymce_models
 
+
 class QuillPost(models.Model):
     content = QuillField()
 
@@ -107,19 +103,19 @@ class Post_quill(models.Model):
 
 
 
+from tinymce.models import HTMLField
 
 
-class post_tinymce(models.Model):
+class full_post(models.Model): 
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts_tinymce',default=1,blank=True,null=True)
-    my_field = tinymce_models.HTMLField()
+    content = HTMLField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title    
     
-
+    def __str__(self):
+        return str(self.title)
+    
     class Meta:
         ordering = ['-created_at']
