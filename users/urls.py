@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import home, profile, RegisterView,tools \
         ,post_list_quil,post_view_quil,my_posts,post_edit_quil\
-        ,full_create_post_tiny
+        ,full_create_post_tiny,projects_list,project_view
 
 urlpatterns = [
     path('', home, name='users-home'),
@@ -16,5 +16,8 @@ urlpatterns = [
     path('posts/edit/<int:id>/', post_edit_quil, name='post-edit'),
     path('posts/<int:id>/', post_edit_quil, name='post-edit'),
     path('test/', full_create_post_tiny, name='post-create3'),
+    path('phone_book/', tools, name='post-create3'),
+    path('projects/', projects_list, name='post-create3'),
+    path('projects/<int:id>/', project_view, name='project_view'),
     # path('test/', create_post_test, name='post-edit'),
 ]

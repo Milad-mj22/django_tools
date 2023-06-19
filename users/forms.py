@@ -26,11 +26,11 @@ class RegisterForm(UserCreationForm):
                              widget=forms.TextInput(attrs={'placeholder': 'Email',
                                                            'class': 'form-control',
                                                            }))
-    BIRTH_YEAR_CHOICES = ["1980", "1981", "1982"]
     CHOICES = (('Option 1', 'Option 1'),('Option 2', 'Option 2'),)
-    a = jobs.objects.values_list('id','name')
-    print(a)
-    job_position = forms.ChoiceField(choices=a)
+    jobs_list = jobs.objects.values_list('id','name')
+    # print(a)
+    job_position = forms.ChoiceField(choices=jobs_list,required=True,
+                                     widget=forms.Select(attrs={'class':'form-control'}))
 
 
     password1 = forms.CharField(max_length=50,
@@ -93,10 +93,10 @@ class UpdateUserForm(forms.ModelForm):
 class UpdateProfileForm(forms.ModelForm):
     avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
     bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-
+    job_position = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 6}))
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio']
+        fields = ['avatar', 'bio','job_position']
 
 
 

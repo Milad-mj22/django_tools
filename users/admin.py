@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Profile
-from .models import Post,Tools,Post_quill , jobs
+from .models import Post,Tools,Post_quill , jobs , Projects , cities
 
 
 import enchant
@@ -17,7 +17,11 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Tools)
+admin.site.register(cities)
 
+
+
+admin.site.register(Projects)
 
 
 

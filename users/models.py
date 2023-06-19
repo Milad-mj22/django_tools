@@ -140,6 +140,32 @@ class full_post(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+class cities(models.Model):
+
+    name = models.CharField(max_length=200)
+    persian_name = models.CharField(max_length=200)
+    short_name = models.CharField(max_length=3,unique=True)
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-short_name']
+
+class Projects(models.Model):
+    name = models.CharField(max_length=200)
+    persian_name = models.CharField(max_length=200)
+    short_name = models.CharField(max_length=10,unique=True)
+    start_date = models.DateTimeField(null=False)
+    project_maanger = models.ForeignKey(User, on_delete= models.CASCADE,related_name='project_manager',default=1,blank=True,null=True)
+    city = models.ForeignKey(cities, on_delete= models.CASCADE,related_name='project_city',default=1,blank=True,null=False)
+    describe = models.CharField(max_length=800)
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-short_name']
 
 
 

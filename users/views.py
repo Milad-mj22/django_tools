@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
 from .forms import PostForm,PostForm_tinymce
-from .models import User,jobs
+from .models import User,jobs , Projects
+from .models import Profile as model_profile
 
 
 
@@ -47,10 +48,13 @@ class RegisterView(View):
             # form.save()
 
 
-            obj =form.save(commit=False)
-            obj.author = User.objects.get(pk=request.user.id)
+            obj =form.save()
+            
             form.save()
 
+            b =model_profile.objects.all().last()
+            b.job_position_id =int(request.POST['job_position'])
+            b.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
 
@@ -112,16 +116,6 @@ def profile(request):
         return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
-
-# class PostList(generic.ListView):
-#     queryset = Post.objects.filter(status=1).order_by('-created_on')
-#     template_name = 'index.html'
-
-# class PostDetail(generic.DetailView):
-#     model = Post
-#     template_name = 'users/post_detail.html'
-
-
 @login_required
 def tools(request):
     queryset = Tools.objects.filter(status=1).order_by('-title').reverse()
@@ -181,16 +175,21 @@ def post_edit_quil(request,id):
             return render(request,'posts/post_form.html',{'form':form})
         
 
-
-
-
 def post_list_quil(request):
     post_list = full_post.objects.all()
     return render(request, 'users/post_list_quil.html', {'posts': post_list})
 
 def post_view_quil(request,slug):
-    print('a'*80)
     post_view = full_post.objects.filter(slug=slug)
     return render(request, 'users/post_view.html', {'post': post_view})
 
 
+def projects_list(request):
+    queryset = Projects.objects.all()
+    return render(request, 'users/projects_list.html',{'projects':queryset})
+
+
+def project_view(request,id):
+    print('asd'*50,id)
+    post_view = Projects.objects.filter(id = id)[0]
+    return render(request, 'users/project_view.html',{'project':post_view})
