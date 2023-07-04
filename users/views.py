@@ -190,6 +190,58 @@ def projects_list(request):
 
 
 def project_view(request,id):
-    print('asd'*50,id)
+    # print('asd'*50,id)
     post_view = Projects.objects.filter(id = id)[0]
     return render(request, 'users/project_view.html',{'project':post_view})
+
+
+
+
+###############################################################
+#####################   SPHINIX   #############################
+###############################################################
+
+
+from django.conf import settings
+DOCS_BASE_PATH = getattr(settings, 'DOCS_BASE_PATH', None)
+DOCS_ROOT = getattr(settings, 'DOCS_ROOT', None)
+
+from django.views.generic import RedirectView
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
+from django.views.static import serve
+import os
+from django.template import loader
+
+
+def sphinix_view(request):
+    template = loader.get_template('users/sphinix_list.html')
+    modules = os.listdir(DOCS_BASE_PATH)
+    context = {
+        'modules': modules,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def serve_docs(request, type, path, **kwargs):
+    doc_path = DOCS_ROOT.format(type)
+    if 'document_root' not in kwargs:
+        kwargs['document_root'] = doc_path
+    
+    return serve(request, path, **kwargs)
+
+
+class DocsRootView(RedirectView):
+    def get_redirect_url(self, **kwargs):
+        view_name = ':'.join(filter(None, [self.request.resolver_match.namespace, 'docs_files']))
+        print('view_name'*50,view_name)
+        ret = reverse(view_name, kwargs={'type': kwargs['type'], 'path': 'index.html'})
+        print(ret)
+        return ret
+    
+
+###############################################################
+###############################################################
+###############################################################

@@ -37,7 +37,7 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['192.168.1.29']
 
 
 
@@ -211,3 +211,8 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
 }
+
+
+
+DOCS_BASE_PATH = 'docs/'
+DOCS_ROOT = os.path.join(DOCS_BASE_PATH, '{}', 'html')

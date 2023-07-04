@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import home, profile, RegisterView,tools \
         ,post_list_quil,post_view_quil,my_posts,post_edit_quil\
-        ,full_create_post_tiny,projects_list,project_view
+        ,full_create_post_tiny,projects_list,project_view,DocsRootView,serve_docs,sphinix_view
 
 urlpatterns = [
     path('', home, name='users-home'),
@@ -20,4 +20,14 @@ urlpatterns = [
     path('projects/', projects_list, name='post-create3'),
     path('projects/<int:id>/', project_view, name='project_view'),
     # path('test/', create_post_test, name='post-edit'),
+
+
+    # sphinix
+    path('docs/',  sphinix_view, name="docs_files"),
+    path('docs/<str:type>/', DocsRootView.as_view(permanent=True), name='docs_root'),
+    path('docs/<str:type>/<path:path>',  serve_docs, name="docs_files"),
+
+    #/////////////////////////
+
+
 ]
