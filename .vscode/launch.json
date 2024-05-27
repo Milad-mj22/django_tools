@@ -5,11 +5,13 @@
     "version": "0.2.0",
     "configurations": [
 
+
+
         {
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "/mnt/487CE64F7CE6377A/django_tools/manage.py",
+            "program": "manage.py",
             "args": [
                 "runserver"
             ],

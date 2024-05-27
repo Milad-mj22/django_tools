@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from PIL import Image
 from django.urls import reverse
 
+from django.db import models
+from django_quill.fields import QuillField
 
-
+from tinymce.models import HTMLField
 
 
 class jobs(models.Model):
@@ -93,12 +95,8 @@ class Tools(models.Model):
     
 
 
-from django.db import models
-from django_quill.fields import QuillField
 
 
-from django.db import models
-from tinymce import models as tinymce_models
 
 
 class QuillPost(models.Model):
@@ -110,7 +108,6 @@ class Post_quill(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts_quil',default=1,blank=True,null=True)
     body = QuillField()
-    # my_field = tinymce_models.HTMLField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -123,7 +120,6 @@ class Post_quill(models.Model):
 
 
 
-from tinymce.models import HTMLField
 
 
 class full_post(models.Model): 
@@ -167,5 +163,70 @@ class Projects(models.Model):
     class Meta:
         ordering = ['-short_name']
 
+from phonenumber_field.modelfields import PhoneNumberField
+
+class PhoneBook(models.Model):
+    
+    first_name = models.CharField(max_length=200,null=False)
+    last_name = models.CharField(max_length=200,null=False)
+    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    description = models.CharField(max_length=3000,null=True,blank=True)
+    project = models.ForeignKey(Projects, on_delete= models.CASCADE,related_name='project',default=1,blank=True,null=True)
+    position = models.CharField(max_length=3000)
+
+    def __str__(self):
+        return str(self.first_name)
+    
+    class Meta:
+        ordering = ['-first_name']
 
 
+
+
+class mother_material(models.Model):
+
+
+    name = models.CharField(max_length=200)
+    describe = models.CharField(max_length=800)
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-name']
+
+
+
+class raw_material(models.Model):
+
+    name = models.CharField(max_length=200)
+    describe = models.CharField(max_length=800)
+    unit = models.CharField(max_length=200)
+
+    mother = models.ForeignKey(mother_material, on_delete= models.CASCADE,related_name='mother_material',blank=True,null=True)
+
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-name']
+
+
+
+
+
+
+
+
+
+class create_order(models.Model):
+
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='user_create_order',blank=True,null=True)
+    content = HTMLField()
+
+
+    

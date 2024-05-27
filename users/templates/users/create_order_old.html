@@ -1,0 +1,36 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% block content %}
+{% include 'users/side_panel_profile.html' %}
+{% load static %}
+<link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
+
+
+<div class="main">
+  <head>
+      {{form.media}}
+      <title> My Forum Post</title>
+      <!-- <script src="https://cdn.tiny.cloud/1/68j3cnbey1kzlifrszj8weq2sp22nr5nmua9fsaj21i32hg2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script> -->
+
+  </head>
+  <body>
+
+    <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.name }}
+            </div>
+        <!-- {{form.as_table}} -->
+            {% for field in form %}
+                {{ field }}
+                <p></p>
+            {% endfor %}
+        <input type="submit" class="btn btn-primary" value="Submit">
+
+    </form>
+
+
+  </body>
+</div>
+{%endblock%}

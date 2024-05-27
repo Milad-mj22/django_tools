@@ -1,0 +1,108 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+{% load static %}
+<link href="{% static 'css/profile_page.css' %}" rel="stylesheet">
+
+<style>
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Orange color palette */
+  .input-group button {
+    width: 1.5rem; /* Adjust width as needed */
+    padding: 0; /* Remove padding for fixed width */
+    line-height: 1.5;
+    color: #fff; /* White text for better contrast */
+    background-color: #ff8c00; /* Orange background */
+    border: 1px solid #fa7a00; /* Slightly darker orange border */
+    cursor: pointer;
+  }
+
+  .input-group button:hover {
+    background-color: #f07000; /* Darker orange on hover */
+  }
+
+  .form-control {
+    padding-right: 2.5rem; /* Adjust padding to accommodate unit */
+    text-align: center; /* Center the text in the input field */
+    flex: 1;
+  }
+
+  .input-group-append {
+    margin-left: 0.5rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .digit-input {
+    width: 3em; /* Set a fixed width */
+    text-align: center; /* Center the text in the input field */
+  }
+</style>
+
+<div class="container">
+  <form method="post">
+    {% csrf_token %}
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      {% for field in materials %}
+      <div class="col">
+        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+          <div class="card-body">
+            <h5 class="card-title">{{ field.name }}</h5>
+            <div class="input-wrapper">
+              <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
+              <input class="form-control digit-input" type="text" id="{{ field.id }}_input" name="{{ field.name }}">
+              <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
+              <div class="input-group-append">
+                <span class="input-group-text">{{ field.unit }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function changeValue(inputId, increment) {
+    const input = document.getElementById(inputId);
+    let value = parseInt(input.value) || 0;
+    value += increment;
+    if (value < 0) {
+      value = 0; // Prevent negative values
+    }
+    input.value = value;
+  }
+
+  // Restrict input to digits only
+  document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('digit-input')) return;
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  // Dynamically resize input field based on number of characters
+  document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('digit-input')) return;
+    e.target.style.width = ((e.target.value.length > 0 ? e.target.value.length : 1) * 1.2) + 'em';
+  });
+</script>
+
+{% endblock %}

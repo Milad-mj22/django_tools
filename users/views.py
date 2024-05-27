@@ -12,9 +12,12 @@ from .models import Post,Tools,full_post
 from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
-from .forms import PostForm,PostForm_tinymce
-from .models import User,jobs , Projects
+from .forms import PostForm_add_material,PostFormAddMotherMaterial
+from .models import User,jobs , Projects , raw_material
 from .models import Profile as model_profile
+from .models import create_order as ModelCreateOrder
+from django.views.decorators.csrf import csrf_protect
+
 
 
 
@@ -126,122 +129,181 @@ def tools(request):
 
 
 @login_required
-def full_create_post_tiny(request):
+def create_order(request):
+
     if request.method == 'POST':
-        form = PostForm_tinymce(request.POST)
+        
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+
+
+        b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
+
+
+        # if form.is_valid():
+            # obj =form.save(commit=False)
+            # obj.author = User.objects.get(pk=request.user.id)
+            # form.save()
+        messages.success(request,'New Forum Successfully Added')
+        return redirect('/profile/my_orders')
+
+    
+        # else:
+        #     messages.error(request, 'Please correct the following errors:')
+        #     materials = raw_material.objects.all()
+        #     return render(request, 'users/post_list_quil.html', {'materials': materials})
+
+
+
+    else:
+
+        materials = raw_material.objects.all()
+        return render(request, 'users/create_order.html', {'materials': materials})
+
+
+
+@login_required
+def my_orders(request):
+    from datetime import datetime
+    orders = ModelCreateOrder.objects.filter(author = request.user).order_by('updated_at')
+    # orders = orders.order_by('-updated_at').reverse()
+    orders = orders.reverse()
+
+    editable = []
+
+    for order in orders:
+        order.content = eval(order.content)
+        diff =  datetime.now() - order.created_at 
+        sec = diff.total_seconds()  
+        
+        if sec < 28800:
+            order.created_at = True
+        else:
+            order.created_at = False
+            # editable.append(False)
+
+    return render(request, 'users/my_orders.html', {'orders': orders,'editable':editable})
+
+
+@login_required
+def add_raw_material(request):
+
+    if request.method == 'POST':
+        form = PostForm_add_material(request.POST)
         if form.is_valid():
             obj =form.save(commit=False)
             obj.author = User.objects.get(pk=request.user.id)
             form.save()
             messages.success(request,'New Forum Successfully Added')
-            return redirect(to='/profile')
+            return redirect('/profile/my_orders')
+
         
         else:
             messages.error(request, 'Please correct the following errors:')
-            return render(request,'users/create_post.html',{'form':form})
+            return render(request,'users/create_material.html',{'form':form})
         
     else:
-        form = PostForm_tinymce()
+        form = PostForm_add_material()
         context = {
             'form':form
         }
-        return render(request, 'users/create_post.html',context)
+        return render(request, 'users/create_material.html',context)
+
+
 
 
 @login_required
-def my_posts(request):
-    post_list = full_post.objects.filter(author = request.user.id)
-    return render(request, 'users/user_post_list_quil.html', {'posts': post_list})
+def add_mother_material(request):
+
+    if request.method == 'POST':
+        form = PostFormAddMotherMaterial(request.POST)
+        if form.is_valid():
+            obj =form.save(commit=False)
+            obj.author = User.objects.get(pk=request.user.id)
+            form.save()
+            messages.success(request,'New Forum Successfully Added')
+            return redirect('/profile/my_orders')
+
+        
+        else:
+            messages.error(request, 'Please correct the following errors:')
+            return render(request,'users/create_mother_material.html',{'form':form})
+        
+    else:
+        form = PostFormAddMotherMaterial()
+        context = {
+            'form':form
+        }
+        return render(request, 'users/create_mother_material.html',context)
+
+
+
+
+
+
 
 
 @login_required
 def post_edit_quil(request,id):
-    post = get_object_or_404(full_post,id=id)
-
+    materials = get_object_or_404(ModelCreateOrder,id=id)
+    materials = eval(materials.content)
     if request.method == 'GET':
 
-        context = {'form': PostForm_tinymce(instance=post), 'id': id}
-        return render(request,'users/create_post.html',context)
+        # context = {'form': PostForm_tinymce(instance=post), 'id': id}
+        # return render(request,'users/create_post.html',context)
+        # materials = raw_material.objects.all()
+        return render(request, 'users/edit_order.html', {'materials': materials,'edit':True})
+
 
    
     elif request.method == 'POST':
-        form = PostForm_tinymce(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'The post has been updated successfully.')
-            return redirect('/profile/my_posts')
-        else:
-            messages.error(request, 'Please correct the following errors:')
-            return render(request,'posts/post_form.html',{'form':form})
+
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+
+
+        b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
+
+
+        messages.success(request, 'The post has been updated successfully.')
+        return redirect('/profile/my_orders')
+        # else:
+        #     messages.error(request, 'Please correct the following errors:')
+        #     return render(request,'posts/post_form.html',{'form':form})
         
 
-def post_list_quil(request):
-    post_list = full_post.objects.all()
-    return render(request, 'users/post_list_quil.html', {'posts': post_list})
-
-def post_view_quil(request,slug):
-    post_view = full_post.objects.filter(slug=slug)
-    return render(request, 'users/post_view.html', {'post': post_view})
-
-
-def projects_list(request):
-    queryset = Projects.objects.all()
-    return render(request, 'users/projects_list.html',{'projects':queryset})
-
-
-def project_view(request,id):
-    # print('asd'*50,id)
-    post_view = Projects.objects.filter(id = id)[0]
-    return render(request, 'users/project_view.html',{'project':post_view})
 
 
 
 
-###############################################################
-#####################   SPHINIX   #############################
-###############################################################
+@login_required
+def show_order(request,id):
+    materials = get_object_or_404(ModelCreateOrder,id=id)
+    materials = eval(materials.content)
+    if request.method == 'GET':
+
+        # context = {'form': PostForm_tinymce(instance=post), 'id': id}
+        # return render(request,'users/create_post.html',context)
+        # materials = raw_material.objects.all()
+        return render(request, 'users/edit_order.html', {'materials': materials,'edit':False})
 
 
-from django.conf import settings
-DOCS_BASE_PATH = getattr(settings, 'DOCS_BASE_PATH', None)
-DOCS_ROOT = getattr(settings, 'DOCS_ROOT', None)
+   
+    elif request.method == 'POST':
 
-from django.views.generic import RedirectView
-try:
-    from django.core.urlresolvers import reverse
-except ImportError:
-    from django.urls import reverse
-from django.views.static import serve
-import os
-from django.template import loader
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
 
 
-def sphinix_view(request):
-    template = loader.get_template('users/sphinix_list.html')
-    modules = os.listdir(DOCS_BASE_PATH)
-    context = {
-        'modules': modules,
-    }
-    return HttpResponse(template.render(context, request))
+        b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
 
 
-def serve_docs(request, type, path, **kwargs):
-    doc_path = DOCS_ROOT.format(type)
-    if 'document_root' not in kwargs:
-        kwargs['document_root'] = doc_path
-    
-    return serve(request, path, **kwargs)
+        messages.success(request, 'The post has been updated successfully.')
+        return redirect('/profile/my_orders')
+        # else:
+        #     messages.error(request, 'Please correct the following errors:')
+        #     return render(request,'posts/post_form.html',{'form':form})
+        
 
 
-class DocsRootView(RedirectView):
-    def get_redirect_url(self, **kwargs):
-        view_name = ':'.join(filter(None, [self.request.resolver_match.namespace, 'docs_files']))
-        print('view_name'*50,view_name)
-        ret = reverse(view_name, kwargs={'type': kwargs['type'], 'path': 'index.html'})
-        print(ret)
-        return ret
-    
 
-###############################################################
-###############################################################
-###############################################################

@@ -1,8 +1,14 @@
+from typing import Any, Mapping
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-
+from django.forms.renderers import BaseRenderer
+from django.forms.utils import ErrorList
 from .models import Profile,Post_quill,jobs
+from django import forms
+from .models import QuillPost , full_post , raw_material , mother_material
+from django import forms
+from django_quill.forms import QuillFormField
 
 
 class RegisterForm(UserCreationForm):
@@ -100,14 +106,11 @@ class UpdateProfileForm(forms.ModelForm):
 
 
 
-from django import forms
-from django_quill.forms import QuillFormField
 
 class QuillFieldForm(forms.Form):
     content = QuillFormField()
 
-from django import forms
-from .models import QuillPost , full_post
+
 
 class QuillPostForm(forms.ModelForm):
     class Meta:
@@ -156,5 +159,63 @@ class PostForm_tinymce(forms.ModelForm):
                 'placeholder': 'Url'
                 }),
             # 'author':forms.HiddenInput(),
+        }
+
+
+class PostForm_add_material(forms.ModelForm):
+
+    class Meta:
+        model = raw_material
+        fields = ['name','describe','unit','mother']
+
+
+        CHOICES = (('Option 1', 'Option 1'),('Option 2', 'Option 2'),)
+        choice = mother_material.objects.values_list('id','name')
+        # print(a)
+        job_position = forms.ChoiceField(choices=choice,required=True,
+                                        widget=forms.Select(attrs={'class':'form-control'}))
+
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Material name'
+                }),
+            'describe': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'describe'
+                }),
+
+            'unit': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'unit'
+                }),
+
+        }
+
+
+class PostFormAddMotherMaterial(forms.ModelForm):
+
+    class Meta:
+        model = mother_material
+        fields = ['name','describe']
+
+
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Material name'
+                }),
+            'describe': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'describe'
+                }),
+
         }
 

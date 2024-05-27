@@ -35,9 +35,9 @@ django.utils.encoding.smart_text = smart_str
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.1.29']
+ALLOWED_HOSTS = ['192.168.1.107','127.0.0.1']
 
 
 
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'social_django',
     'django_quill',
     'tinymce',
+    'phone_field',
 ]
 
 MIDDLEWARE = [
@@ -136,19 +137,19 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

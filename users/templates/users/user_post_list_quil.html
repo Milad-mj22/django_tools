@@ -5,22 +5,22 @@
 {% load static %}
 {% load static %}
 <link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
 
 
 <div class="container">
     <div class="row">
         <!-- Blog Entries Column -->
         <div class="col-md-8 mt-3 left">
-            {% for post in posts %}
+            {% for post in orders %}
             <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title">{{ post.title }}</h2>
-                    <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
+                    <p class="card-text text-muted h6">{{ post.author }} | {{ post.updated_at}} </p>
                    <!-- asdada -->
                     <p class="card-text">{{post.slug|slice:":200" }}</p>
-                    <a href="/posts/{{post.slug}}" class="btn btn-primary">Read More &rarr;</a>
-                    <a href="/posts/edit/{{post.id}}" class="btn btn-primary">Edit &rarr;</a>
+                    <a href="/orders/{{post.slug}}" class="btn btn-primary">Read More &rarr;</a>
+                    <a href="/orders/edit_order/{{post.id}}" class="btn btn-primary">Edit &rarr;</a>
                 </div>
             </div>
             {% endfor %}

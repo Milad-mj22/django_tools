@@ -1,10 +1,13 @@
 from django.contrib import admin
 from .models import Profile
-from .models import Post,Tools,Post_quill , jobs , Projects , cities
+from .models import Post,Tools,Post_quill , jobs , Projects ,raw_material,create_order\
+                    ,mother_material
+from django.contrib import admin
+from .models import QuillPost
+from .models import full_post
+from django.db import models
+from tinymce.widgets import TinyMCE
 
-
-import enchant
-enchant.dict_exists('en')
 
 
 admin.site.register(Profile)
@@ -15,32 +18,17 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'content']
     prepopulated_fields = {'slug': ('title',)}
 
-admin.site.register(Post, PostAdmin)
-admin.site.register(Tools)
-admin.site.register(cities)
 
-
-
-admin.site.register(Projects)
-
-
-
-from django.contrib import admin
-from .models import QuillPost
-
-@admin.register(QuillPost)
-class QuillPostAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(Post_quill)
+admin.site.register(raw_material)
+admin.site.register(mother_material)
+admin.site.register(create_order)
 
 
 
 
-from .models import full_post
-from django.db import models
-from tinymce.widgets import TinyMCE
+
+
+
 
   
 class textEditorAdmin(admin.ModelAdmin):
