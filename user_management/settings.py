@@ -35,9 +35,9 @@ django.utils.encoding.smart_text = smart_str
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.107','127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.107','127.0.0.1']#,'0.0.0.0']
 
 
 
@@ -156,6 +156,9 @@ MEDIA_URL = '/media/'
 print('MEDIA_ROOT',MEDIA_ROOT)
 
 
+# Define the directory where static files will be collected
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 
@@ -185,35 +188,3 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
-
-TINYMCE_DEFAULT_CONFIG = {
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 20,
-    'selector': 'textarea',
-    'theme': 'silver',
-    'plugins': '''
-            textcolor save link image media preview codesample contextmenu
-            table code lists fullscreen  insertdatetime  nonbreaking
-            contextmenu directionality searchreplace wordcount visualblocks
-            visualchars code fullscreen autolink lists  charmap print  hr
-            anchor pagebreak
-            ''',
-    'toolbar1': '''
-            fullscreen preview bold italic underline | fontselect,
-            fontsizeselect  | forecolor backcolor | alignleft alignright |
-            aligncenter alignjustify | indent outdent | bullist numlist table |
-            | link image media | codesample |
-            ''',
-    'toolbar2': '''
-            visualblocks visualchars |
-            charmap hr pagebreak nonbreaking anchor |  code |
-            ''',
-    'contextmenu': 'formats | link image',
-    'menubar': True,
-    'statusbar': True,
-}
-
-
-
-DOCS_BASE_PATH = 'docs/'
-DOCS_ROOT = os.path.join(DOCS_BASE_PATH, '{}', 'html')

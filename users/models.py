@@ -82,11 +82,8 @@ class Post(models.Model):
 class Tools(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
-    # author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts')
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS, default=0)
-    image = models.ImageField(default='default.jpg', upload_to='tools_images')
     class Meta:
         ordering = ['-title']
 
@@ -95,6 +92,18 @@ class Tools(models.Model):
     
 
 
+class FoodFilter(models.Model):
+
+
+    title = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
+    content = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-title']
+
+    def __str__(self):
+        return self.title
 
 
 
@@ -230,3 +239,19 @@ class create_order(models.Model):
 
 
     
+
+class SnappFoodList(models.Model):
+
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    city = models.ForeignKey(cities, on_delete= models.CASCADE,related_name='city_name',blank=True,null=True)
+    name = models.CharField(max_length=200)
+    link = models.CharField(max_length=20000)
+
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-name']

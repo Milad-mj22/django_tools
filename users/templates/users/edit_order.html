@@ -1,52 +1,162 @@
+
+
+
+
+
+
+
+
+
+
+
+
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title%}
+{% block title %} Home Page {% endblock title %}
 {% block content %}
-<!-- {% include 'users/side_panel_profile.html' %} -->
 {% load static %}
-<link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
+<link href="{% static 'css/profile_page.css' %}" rel="stylesheet">
+
+<style>
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group button {
+    width: 1.5rem;
+    padding: 0;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #ff8c00;
+    border: 1px solid #fa7a00;
+    cursor: pointer;
+  }
+
+  .input-group button:hover {
+    background-color: #f07000;
+  }
+
+  .form-control {
+    padding-right: 2.5rem;
+    text-align: center;
+    flex: 1;
+    color: #000;
+    background-color: #fff;
+  }
+
+  .input-group-append {
+    margin-left: 0.5rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .digit-input {
+    width: 6em;
+    text-align: center;
+    color: #000;
+    background-color: #fff;
+    padding: 0.5rem;
+  }
+
+  /* Add padding to the top of the content container */
+  .content-container {
+    padding-top: 2rem; /* Adjust this value to increase/decrease the space */
+  }
+
+  /* Style for additional details textarea */
+  .additional-details {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    resize: vertical;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
 
 
-<div class="main">
-  <!-- <head>
-      {{form.media}}
-      <title> My Forum Post</title>
-      <script src="https://cdn.tiny.cloud/1/68j3cnbey1kzlifrszj8weq2sp22nr5nmua9fsaj21i32hg2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</style>
 
-  </head> -->
-<body>
-
-    <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
-        <!-- <div class="card-header justify-content-center"> -->
-        <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ form.name }}
-                </div>
-            <!-- {{form.as_table}} -->
-            <div class="card-body">
-                {% for field,value in materials.items %}
-                    <div class="flax-container">
-        
-                        <label class="inline-block">{{ field }}</label>
-                        <input class="inline-block"  type="text" id="{{ field }} :" name="{{ field }}" value="{{value}}">
-                        <label class="inline-block">{{ field.unit }}</label>
-
-                        <p></p>
-                    </div>  
-                {% endfor %}
+<div class="container content-container">
+  <form method="post">
+    {% csrf_token %}
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        {% for field,value in materials.items %}
+      <div class="col">
+        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+          <div class="card-body">
+            <h5 class="card-title">{{ field }}</h5>
+            <div class="input-wrapper">
+              <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field }}_input', -1)">-</button>
+              <input class="form-control digit-input" type="text" id="{{ field}}_input" name="{{ field }}" value={{value}}>
+              <button type="button" class="btn btn-increment" onclick="changeValue('{{ field }}_input', 1)">+</button>
+              <!-- <div class="input-group-append">
+                <span class="input-group-text">{{ field.unit }}</span>
+              </div> -->
             </div>
-            {% if edit %}
-                <input type="submit" class="btn btn-primary" value="Submit">
-            {% endif %}
-            
-        </form>
-                       
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    
 
+    <!-- Additional details field -->
+    <div class="mt-4">
+      <label for="additional_details" class="form-label">Additional Details</label>
+      <textarea id="additional_details" name="additional_details" class="additional-details" rows="4" placeholder="Enter any additional details here...">{{details}}</textarea>
+    </div>
 
-</body>
+    <div class="text-center mt-4">
+        {% if edit %}
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        {% endif %}
+    </div>
+
+  </form>
 </div>
 
-{%endblock%}
+<script>
+  function changeValue(inputId, increment) {
+    const input = document.getElementById(inputId);
+    let value = parseInt(input.value) || 0;
+    value += increment;
+    if (value < 0) {
+      value = 0; // Prevent negative values
+    }
+    input.value = value;
+  }
+
+  // Restrict input to digits only
+  document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('digit-input')) return;
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  // Dynamically resize input field based on number of characters
+  document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('digit-input')) return;
+    e.target.style.width = ((e.target.value.length > 0 ? e.target.value.length : 1) * 1.2) + 'em';
+  });
+</script>
+
+{% endblock %}
+
+
+
+
+

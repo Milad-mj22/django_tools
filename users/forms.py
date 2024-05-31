@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms.renderers import BaseRenderer
 from django.forms.utils import ErrorList
-from .models import Profile,Post_quill,jobs
+from .models import Profile,Post_quill,jobs,SnappFoodList,cities
 from django import forms
 from .models import QuillPost , full_post , raw_material , mother_material
 from django import forms
@@ -162,39 +162,33 @@ class PostForm_tinymce(forms.ModelForm):
         }
 
 
+        
 class PostForm_add_material(forms.ModelForm):
+    choice = mother_material.objects.values_list('id', 'name')
+    job_position = forms.ChoiceField(choices=choice, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = raw_material
-        fields = ['name','describe','unit','mother']
-
-
-        CHOICES = (('Option 1', 'Option 1'),('Option 2', 'Option 2'),)
-        choice = mother_material.objects.values_list('id','name')
-        # print(a)
-        job_position = forms.ChoiceField(choices=choice,required=True,
-                                        widget=forms.Select(attrs={'class':'form-control'}))
-
+        fields = ['name', 'describe', 'unit', 'job_position']  # Include 'name' field here
 
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
                 'placeholder': 'Material name'
-                }),
+            }),
             'describe': TextInput(attrs={
-                'class': "form-control", 
+                'class': "form-control",
                 'style': 'max-width: 300px;',
                 'placeholder': 'describe'
-                }),
-
+            }),
             'unit': TextInput(attrs={
-                'class': "form-control", 
+                'class': "form-control",
                 'style': 'max-width: 300px;',
                 'placeholder': 'unit'
-                }),
-
+            }),
         }
+
 
 
 class PostFormAddMotherMaterial(forms.ModelForm):
@@ -219,3 +213,26 @@ class PostFormAddMotherMaterial(forms.ModelForm):
 
         }
 
+
+
+class PostFormAddRestaurant(forms.ModelForm):
+
+    choice = cities.objects.values_list('id', 'name')
+    city = forms.ChoiceField(choices=choice, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = SnappFoodList
+        fields = ['name', 'link','city']  # Include 'name' field here
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Restaurant name'
+            }),
+            'link': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Link'
+            }),
+        }

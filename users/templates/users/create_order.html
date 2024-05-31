@@ -10,25 +10,26 @@
     align-items: center;
   }
 
-  /* Orange color palette */
   .input-group button {
-    width: 1.5rem; /* Adjust width as needed */
-    padding: 0; /* Remove padding for fixed width */
+    width: 1.5rem;
+    padding: 0;
     line-height: 1.5;
-    color: #fff; /* White text for better contrast */
-    background-color: #ff8c00; /* Orange background */
-    border: 1px solid #fa7a00; /* Slightly darker orange border */
+    color: #fff;
+    background-color: #ff8c00;
+    border: 1px solid #fa7a00;
     cursor: pointer;
   }
 
   .input-group button:hover {
-    background-color: #f07000; /* Darker orange on hover */
+    background-color: #f07000;
   }
 
   .form-control {
-    padding-right: 2.5rem; /* Adjust padding to accommodate unit */
-    text-align: center; /* Center the text in the input field */
+    padding-right: 2.5rem;
+    text-align: center;
     flex: 1;
+    color: #000;
+    background-color: #fff;
   }
 
   .input-group-append {
@@ -48,12 +49,38 @@
   }
 
   .digit-input {
-    width: 3em; /* Set a fixed width */
-    text-align: center; /* Center the text in the input field */
+    width: 6em;
+    text-align: center;
+    color: #000;
+    background-color: #fff;
+    padding: 0.5rem;
   }
+
+  /* Add padding to the top of the content container */
+  .content-container {
+    padding-top: 2rem; /* Adjust this value to increase/decrease the space */
+  }
+
+  /* Style for additional details textarea */
+  .additional-details {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    resize: vertical;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
+
+
 </style>
 
-<div class="container">
+<div class="container content-container">
   <form method="post">
     {% csrf_token %}
     <div class="row row-cols-1 row-cols-md-3 g-3">
@@ -64,7 +91,7 @@
             <h5 class="card-title">{{ field.name }}</h5>
             <div class="input-wrapper">
               <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
-              <input class="form-control digit-input" type="text" id="{{ field.id }}_input" name="{{ field.name }}">
+              <input class="form-control digit-input" type="text" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
               <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
               <div class="input-group-append">
                 <span class="input-group-text">{{ field.unit }}</span>
@@ -75,9 +102,17 @@
       </div>
       {% endfor %}
     </div>
-    <div class="text-center mt-4">
-      <button type="submit" class="btn btn-primary">Submit</button>
+
+    <!-- Additional details field -->
+    <div class="mt-4">
+      <label for="additional_details" class="form-label">Additional Details</label>
+      <textarea id="additional_details" name="additional_details" class="additional-details" rows="4" placeholder="Enter any additional details here..."></textarea>
     </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary btn-block">Submit</button>
+    </div>
+
   </form>
 </div>
 

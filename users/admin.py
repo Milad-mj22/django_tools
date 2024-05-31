@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Profile
-from .models import Post,Tools,Post_quill , jobs , Projects ,raw_material,create_order\
-                    ,mother_material
+from .models import Tools,Post,Tools,Post_quill , jobs , Projects ,raw_material,create_order\
+                    ,mother_material,FoodFilter,SnappFoodList,cities
 from django.contrib import admin
 from .models import QuillPost
 from .models import full_post
@@ -22,6 +22,10 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(raw_material)
 admin.site.register(mother_material)
 admin.site.register(create_order)
+admin.site.register(Tools)
+admin.site.register(FoodFilter)
+admin.site.register(SnappFoodList)
+admin.site.register(cities)
 
 
 

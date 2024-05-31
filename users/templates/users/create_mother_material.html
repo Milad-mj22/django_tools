@@ -6,29 +6,67 @@
 <link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
 
+<style>
+    .main {
+        width: 100%;
+        max-width: 800px; /* Adjust max-width as needed */
+        margin: 10px auto 0; /* Adjust top margin to create space between header toolbar */
+        padding: 0 15px; /* Add some padding to prevent content from touching the edges */
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        /* height: calc(100vh - 50px); Set the height to 100% of the viewport height minus the header toolbar height */
+    }
+
+    .form-container {
+        width: 100%; /* Make the form container full width */
+        max-width: 400px; /* Adjust max-width as needed */
+        margin-top: 0px; /* Add some top margin */
+    }
+
+    /* Adjust form fields for smaller screens */
+    @media screen and (max-width: 576px) {
+        .form-group {
+            margin-bottom: 15px; /* Add margin to separate form fields */
+        }
+        .btn {
+            width: 100%; /* Make submit button full width on smaller screens */
+        }
+    }
+    
+    .btn-block {
+    display: block;
+    width: 100%;
+  }
+
+
+
+</style>
 
 <div class="main">
-  <!-- <head>
-      {{form.media}}
-      <title> My Forum Post</title>
-      <script src="https://cdn.tiny.cloud/1/68j3cnbey1kzlifrszj8weq2sp22nr5nmua9fsaj21i32hg2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
-  </head> -->
-  <body>
-        <form method="post">
+    <div class="form-container">
+        <!-- <head>
+            {{form.media}}
+            <title> My Forum Post</title>
+            <script src="https://cdn.tiny.cloud/1/68j3cnbey1kzlifrszj8weq2sp22nr5nmua9fsaj21i32hg2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        </head> -->
+        <body>
+            <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    {{ form.name }}
-                </div>
-            <!-- {{form.as_table}} -->
+                <!-- {{form.as_table}} -->
                 {% for field in form %}
                     {{ field }}
                     <p></p>
                 {% endfor %}
-            <input type="submit" class="btn btn-primary" value="Submit">
-        </form>
-
-
-  </body>
+                <input type="submit" class="btn btn-primary btn-block" value="Submit">
+            </form>
+        </body>
+    </div>
 </div>
-{%endblock%}
+{% endblock %}
+
+
+
+
+
+

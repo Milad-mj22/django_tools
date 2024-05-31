@@ -1,0 +1,102 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% block content %}
+
+<style>
+    .main-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+    }
+
+    .add-button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .add-button:hover {
+        background-color: #218838;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        background-color: #ffffff;
+        padding: 10px;
+        align-items: center;
+    }
+
+    .grid-item {
+        background-color: rgba(125, 182, 247, 0.8);
+        border: 8px solid rgb(255, 255, 255);
+        border-radius: 15px;
+        padding: 10px;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .card-text {
+        font-size: 15px;
+        color: darkolivegreen;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .grid-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .grid-container {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-item {
+            font-size: 25px;
+        }
+
+        .card-text {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .grid-item {
+            font-size: 20px;
+        }
+
+        .card-text {
+            font-size: 12px;
+        }
+    }
+</style>
+
+<div class="main-container">
+
+    <div class="grid-container">
+        {% for city in cities %}
+        <div class="grid-item">
+            <div class="card-body">
+                <h2 class="card-title">{{ city }}</h2>
+                <a href="snapp/{{ city }}" class="btn btn-primary">Read More &rarr;</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,13 +1,27 @@
 from django.urls import path
 from .views import home, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
-        ,create_order,add_mother_material,show_order
+        ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
+        restaurant_food_list,add_restaurant
 
 urlpatterns = [
     path('', home, name='users-home'),
     path('register/', RegisterView.as_view(), name='users-register'),
     path('profile/', profile, name='users-profile'),
     path('tools/',tools, name='tools'),
+    path('tools/snapp',snapp, name='tools'),
+
+    # path('tools/snapp/اصفهان/<str:res_name>',restaurant_food_list, name='tools'),
+
+    
+    path('tools/snapp/add_restaurant',add_restaurant, name='tools'),
+    path('tools/snapp/<str:city>',show_restaurant_list, name='tools'),
+    # path('tools/snapp/<str:city>/<str:res_name>',restaurant_food_list, name='tools'),
+    path('tools/snapp/<str:city>/<str:res_name>',restaurant_food_list, name='tools'),
+
+
+
+    
     path('profile/create_order', create_order, name='create_post'),
     path('profile/my_orders', my_orders, name='my_posts'),
     path('profile/create_material/', add_raw_material, name='add_material'),

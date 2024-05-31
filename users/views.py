@@ -12,12 +12,18 @@ from .models import Post,Tools,full_post
 from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
-from .forms import PostForm_add_material,PostFormAddMotherMaterial
+from .forms import PostForm_add_material,PostFormAddMotherMaterial,PostFormAddRestaurant
 from .models import User,jobs , Projects , raw_material
 from .models import Profile as model_profile
 from .models import create_order as ModelCreateOrder
 from django.views.decorators.csrf import csrf_protect
+import os
 
+from snapp_discount.getPrice import get_price
+
+
+
+CACHE_CITIES = 'snapp_discount/cache/cities'
 
 
 
@@ -121,7 +127,7 @@ def profile(request):
 
 @login_required
 def tools(request):
-    queryset = Tools.objects.filter(status=1).order_by('-title').reverse()
+    queryset = Tools.objects.all().order_by('-title').reverse()
     print('queryset',queryset)
     print('show tools page')
     
@@ -135,6 +141,12 @@ def create_order(request):
         
         data = dict(request.POST.dict())
         data.pop('csrfmiddlewaretoken','Not found')
+
+
+        for field,value in data.items():
+            if value.isnumeric():
+                data[field]=int(value)
+
 
 
         b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
@@ -247,19 +259,36 @@ def add_mother_material(request):
 def post_edit_quil(request,id):
     materials = get_object_or_404(ModelCreateOrder,id=id)
     materials = eval(materials.content)
+
+    details = materials['additional_details']
+    materials.pop('additional_details')
+    
     if request.method == 'GET':
+
+        # new_mat = {}
+        # for field,value in materials.items():
+        #     if isinstance(value,int) :
+        #         new_mat[field] = value
 
         # context = {'form': PostForm_tinymce(instance=post), 'id': id}
         # return render(request,'users/create_post.html',context)
         # materials = raw_material.objects.all()
-        return render(request, 'users/edit_order.html', {'materials': materials,'edit':True})
+        return render(request, 'users/edit_order.html', {'materials': materials,'edit':True,'details':details})
 
 
    
     elif request.method == 'POST':
 
         data = dict(request.POST.dict())
+
         data.pop('csrfmiddlewaretoken','Not found')
+
+
+        for field,value in data.items():
+            if value.isnumeric():
+                data[field]=int(value)
+
+
 
 
         b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
@@ -304,6 +333,94 @@ def show_order(request,id):
         #     messages.error(request, 'Please correct the following errors:')
         #     return render(request,'posts/post_form.html',{'form':form})
         
+
+
+
+@login_required
+def snapp(request):
+
+    print('show snapp page')
+
+    try:
+        cities = os.listdir(CACHE_CITIES)
+    except:
+        cities = []
+
+    return render(request, 'users/snapp_cities.html',{'cities':cities})
+
+
+
+
+def show_restaurant_list(request,city):
+
+
+    print('show snapp page')
+
+    try:
+        path = os.path.join(CACHE_CITIES,city)
+        restaurants_ = os.listdir( path)
+
+        restaurants = []
+
+        for res in restaurants_:
+            restaurants.append(res[:-5])
+
+    except:
+        restaurants = []
+
+    return render(request, 'users/snapp_restaurants.html',{'city':city,'restaurants':restaurants})
+
+
+
+
+
+
+
+def restaurant_food_list(request,city,res_name):
+
+
+    # try:
+
+    gp = get_price(res_name=res_name,city=city)
+
+
+
+
+    prices = gp.ret_price()
+    prices = prices[res_name]
+    print('show restaurant_list page')
+
+
+    # except:
+    #     prices = []
+
+
+    return render(request, 'users/show_prices.html',{'city':city,'prices':prices})
+
+
+def add_restaurant(request):
+
+
+    if request.method == 'POST':
+        form = PostFormAddRestaurant(request.POST)
+        if form.is_valid():
+            obj =form.save(commit=False)
+            obj.author = User.objects.get(pk=request.user.id)
+            form.save()
+            messages.success(request,'New Forum Successfully Added')
+            return redirect('/profile/my_orders')
+
+        
+        else:
+            messages.error(request, 'Please correct the following errors:')
+            return render(request,'users/create_mother_material.html',{'form':form})
+        
+    else:
+        form = PostFormAddRestaurant()
+        context = {
+            'form':form
+        }
+        return render(request, 'users/create_mother_material.html',context)
 
 
 
