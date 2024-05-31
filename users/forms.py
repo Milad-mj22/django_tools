@@ -214,15 +214,17 @@ class PostFormAddMotherMaterial(forms.ModelForm):
         }
 
 
-
 class PostFormAddRestaurant(forms.ModelForm):
-
-    choice = cities.objects.values_list('id', 'name')
-    city = forms.ChoiceField(choices=choice, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+    city = forms.ModelChoiceField(
+        queryset=cities.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        to_field_name='name'
+    )
 
     class Meta:
         model = SnappFoodList
-        fields = ['name', 'link','city']  # Include 'name' field here
+        fields = ['name', 'link', 'city']  # Include 'name', 'link', and 'city' fields here
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -230,9 +232,18 @@ class PostFormAddRestaurant(forms.ModelForm):
                 'style': 'max-width: 300px;',
                 'placeholder': 'Restaurant name'
             }),
-            'link': TextInput(attrs={
+            'link': forms.TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
                 'placeholder': 'Link'
             }),
+            'city': forms.Select(attrs={
+                'class': "form-control",
+            }),
         }
+
+    def save(self, commit=True):
+        instance = super(PostFormAddRestaurant, self).save(commit=False)
+        if commit:
+            instance.save()
+        return instance

@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 import numpy as np
 from django.http import HttpResponse
 from .forms import PostForm_add_material,PostFormAddMotherMaterial,PostFormAddRestaurant
-from .models import User,jobs , Projects , raw_material
+from .models import User,jobs , Projects , raw_material,SnappFoodList
 from .models import Profile as model_profile
 from .models import create_order as ModelCreateOrder
 from django.views.decorators.csrf import csrf_protect
@@ -355,18 +355,19 @@ def show_restaurant_list(request,city):
 
 
     print('show snapp page')
+    restaurants = SnappFoodList.objects.all().order_by('-name')
 
-    try:
-        path = os.path.join(CACHE_CITIES,city)
-        restaurants_ = os.listdir( path)
+    # try:
+    #     path = os.path.join(CACHE_CITIES,city)
+    #     restaurants_ = os.listdir( path)
 
-        restaurants = []
+    #     restaurants = []
 
-        for res in restaurants_:
-            restaurants.append(res[:-5])
+    #     for res in restaurants_:
+    #         restaurants.append(res[:-5])
 
-    except:
-        restaurants = []
+    # except:
+    #     restaurants = []
 
     return render(request, 'users/snapp_restaurants.html',{'city':city,'restaurants':restaurants})
 
@@ -407,10 +408,18 @@ def add_restaurant(request):
             obj =form.save(commit=False)
             obj.author = User.objects.get(pk=request.user.id)
             form.save()
-            messages.success(request,'New Forum Successfully Added')
-            return redirect('/profile/my_orders')
 
-        
+            # get_price()
+
+            data = request.POST.dict()
+
+            gp = get_price(res_name=data['name'],res_link=data['link'],city= data['city'])
+            gp.get_name_price()
+
+            messages.success(request,'New Forum Successfully Added')
+
+            # return render(request, 'users/snapp_restaurants.html',{'city':city,'restaurants':restaurants})
+            return tools(request=request)
         else:
             messages.error(request, 'Please correct the following errors:')
             return render(request,'users/create_mother_material.html',{'form':form})

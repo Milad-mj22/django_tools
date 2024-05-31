@@ -15,22 +15,27 @@ class get_price():
         self.res_name = res_name
         self.res_link = res_link
 
-        self.get_foods = get_foods()
 
 
 
 
     def get_name_price(self):
-        self.get_foods.open_snap_food(self.res_link)
-        self.get_foods.close_set_city()
-        foods = self.get_foods.get_name_price(self.res_name)
+        try:
+            self.get_foods = get_foods()
 
-        # foods = {'pizza_sara': {'False': 'False', 'هپی برگر': '۱۳۲,۰۰۰ تومان'}}
+            self.get_foods.open_snap_food(self.res_link)
+            self.get_foods.close_set_city()
+            foods = self.get_foods.get_name_price(self.res_name)
+
+            # foods = {'pizza_sara': {'False': 'False', 'هپی برگر': '۱۳۲,۰۰۰ تومان'}}
 
 
-        self.get_foods.json_obj.write_restaurant_prices(self.city,self.res_name,foods)
+            self.get_foods.json_obj.write_restaurant_prices(self.city,self.res_name,foods)
 
-
+            return True
+    
+        except:
+            return False
     
     def ret_price(self):
 
