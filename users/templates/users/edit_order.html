@@ -1,19 +1,9 @@
 
-
-
-
-
-
-
-
-
-
-
-
 {% extends "users/base.html" %}
 {% block title %} Home Page {% endblock title %}
 {% block content %}
 {% load static %}
+
 <link href="{% static 'css/profile_page.css' %}" rel="stylesheet">
 
 <style>
@@ -97,21 +87,34 @@
     {% csrf_token %}
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for field,value in materials.items %}
-      <div class="col">
-        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
-          <div class="card-body">
-            <h5 class="card-title">{{ field }}</h5>
-            <div class="input-wrapper">
-              <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field }}_input', -1)">-</button>
-              <input class="form-control digit-input" type="text" id="{{ field}}_input" name="{{ field }}" value={{value}}>
-              <button type="button" class="btn btn-increment" onclick="changeValue('{{ field }}_input', 1)">+</button>
-              <!-- <div class="input-group-append">
-                <span class="input-group-text">{{ field.unit }}</span>
-              </div> -->
+
+            <div class="col">
+              <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                <div class="card-body">
+                  <h5 class="card-title">{{ field }}</h5>
+                  <div class="input-wrapper">
+                    {% if edit %}
+                    <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field }}_input', -1)">-</button>
+                    <input class="form-control digit-input" type="text" id="{{ field}}_input" name="{{ field }}" value={{value}}>
+                    <button type="button" class="btn btn-increment" onclick="changeValue('{{ field }}_input', 1)">+</button>
+                    {% endif %}
+
+                    {% if not edit %}
+
+                      
+                    <input class="form-control digit-input" type="text" id="{{ field}}_input" name="{{ field }}" value={{value}}>
+
+                    {% endif %}
+
+                    <!-- <div class="input-group-append">
+                      <span class="input-group-text">{{ field.unit }}</span>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+
+          
       {% endfor %}
     </div>
 

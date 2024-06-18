@@ -165,11 +165,11 @@ class PostForm_tinymce(forms.ModelForm):
         
 class PostForm_add_material(forms.ModelForm):
     choice = mother_material.objects.values_list('id', 'name')
-    job_position = forms.ChoiceField(choices=choice, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+    mother_material = forms.ChoiceField(choices=choice, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = raw_material
-        fields = ['name', 'describe', 'unit', 'job_position']  # Include 'name' field here
+        fields = ['name', 'describe', 'unit', 'mother_material']  # Include 'name' field here
 
         widgets = {
             'name': forms.TextInput(attrs={

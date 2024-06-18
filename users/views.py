@@ -16,6 +16,7 @@ from .forms import PostForm_add_material,PostFormAddMotherMaterial,PostFormAddRe
 from .models import User,jobs , Projects , raw_material,SnappFoodList
 from .models import Profile as model_profile
 from .models import create_order as ModelCreateOrder
+from .models import mother_material as MotherMaterial
 from django.views.decorators.csrf import csrf_protect
 import os
 
@@ -169,7 +170,7 @@ def create_order(request):
 
     else:
 
-        materials = raw_material.objects.all()
+        materials = raw_material.objects.all().order_by('-mother_id')
         return render(request, 'users/create_order.html', {'materials': materials})
 
 
@@ -205,6 +206,8 @@ def add_raw_material(request):
         if form.is_valid():
             obj =form.save(commit=False)
             obj.author = User.objects.get(pk=request.user.id)
+            mother_id = form.cleaned_data['mother_material']
+            obj.mother = get_object_or_404(MotherMaterial, id=mother_id)
             form.save()
             messages.success(request,'New Forum Successfully Added')
             return redirect('/profile/my_orders')

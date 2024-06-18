@@ -76,8 +76,6 @@
     display: block;
     width: 100%;
   }
-
-
 </style>
 
 <div class="container content-container">
@@ -91,7 +89,7 @@
             <h5 class="card-title">{{ field.name }}</h5>
             <div class="input-wrapper">
               <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
-              <input class="form-control digit-input" type="text" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
+              <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
               <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
               <div class="input-group-append">
                 <span class="input-group-text">{{ field.unit }}</span>
@@ -119,25 +117,13 @@
 <script>
   function changeValue(inputId, increment) {
     const input = document.getElementById(inputId);
-    let value = parseInt(input.value) || 0;
+    let value = parseFloat(input.value) || 0;
     value += increment;
     if (value < 0) {
       value = 0; // Prevent negative values
     }
-    input.value = value;
+    input.value = value.toFixed(1);
   }
-
-  // Restrict input to digits only
-  document.addEventListener('input', function (e) {
-    if (!e.target.classList.contains('digit-input')) return;
-    e.target.value = e.target.value.replace(/\D/g, '');
-  });
-
-  // Dynamically resize input field based on number of characters
-  document.addEventListener('input', function (e) {
-    if (!e.target.classList.contains('digit-input')) return;
-    e.target.style.width = ((e.target.value.length > 0 ? e.target.value.length : 1) * 1.2) + 'em';
-  });
 </script>
 
 {% endblock %}
