@@ -317,6 +317,7 @@ def show_order(request,id):
         # context = {'form': PostForm_tinymce(instance=post), 'id': id}
         # return render(request,'users/create_post.html',context)
         # materials = raw_material.objects.all()
+
         return render(request, 'users/edit_order.html', {'materials': materials,'edit':False})
 
 
@@ -436,3 +437,55 @@ def add_restaurant(request):
 
 
 
+
+
+
+@login_required
+def print_order(request,id):
+    materials = get_object_or_404(ModelCreateOrder,id=id)
+    import json
+    material_dict = eval(materials.content)
+    new_materials ={}
+    for material,value in material_dict.items():
+        try:
+           if value!='':
+                if float(value)>0:
+                    unit =''
+                    try:
+                        ret = raw_material.objects.get(name=material)
+                        unit = ret.unit
+                    except:
+                        print('Cant get unit {}'.format(material))
+                    new_materials[material]=str(value)+' '+str(unit)
+        except Exception as e:
+            print(e)
+
+    # materials = eval(materials.content)
+    # if request.method == 'GET':
+
+        # context = {'form': PostForm_tinymce(instance=post), 'id': id}
+        # return render(request,'users/create_post.html',context)
+        # materials = raw_material.objects.all()
+        
+
+    headers = ['کالا','درخواستی','ارسالی','تحویلی','مانده','خروج','مانده','کالا','درخواستی','ارسالی','تحویلی','مانده','خروج','مانده']
+
+    return render(request, 'users/print_order.html', {'materials': new_materials,'edit':False,'headers':headers})
+
+
+   
+    # elif request.method == 'POST':
+
+    #     data = dict(request.POST.dict())
+    #     data.pop('csrfmiddlewaretoken','Not found')
+
+
+    #     b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
+
+
+    #     messages.success(request, 'The post has been updated successfully.')
+    #     return redirect('/profile/my_orders')
+        # else:
+        #     messages.error(request, 'Please correct the following errors:')
+        #     return render(request,'posts/post_form.html',{'form':form})
+        

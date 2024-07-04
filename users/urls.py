@@ -2,7 +2,7 @@ from django.urls import path
 from .views import home, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
-        restaurant_food_list,add_restaurant
+        restaurant_food_list,add_restaurant,print_order
 
 urlpatterns = [
     path('', home, name='users-home'),
@@ -20,6 +20,7 @@ urlpatterns = [
     path('tools/snapp/<str:city>/<str:res_name>',restaurant_food_list, name='tools'),
 
 
+    path('orders/print_order/<int:id>', print_order, name='order-show'),
 
     
     path('profile/create_order', create_order, name='create_post'),

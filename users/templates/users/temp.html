@@ -1,0 +1,81 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+{% load static %}
+
+<link href="{% static 'css/print_order.css' %}" rel="stylesheet">
+
+<script>
+  function setPrintSettings() {
+      const style = document.createElement('style');
+      style.innerHTML = `
+              @media print {
+                *,
+                *:before,
+                *:after {
+                  box-sizing: border-box;
+                }
+
+                @page {
+                  size: page-width page-height;
+                  margin: page-margin;
+                }
+      `;
+      document.head.appendChild(style);
+  }
+  
+  window.onload = function() {
+      setPrintSettings();
+      window.print();
+  };
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Table</title>
+</head>
+<body>
+  <h1 class="text-center mb-4">فرم درخواست و حواله کالا</h1>
+  <div class="container">
+    <table>
+      <thead>
+          <tr>
+              {% for header in headers %}
+              <th>{{ header }}</th>
+              {% endfor %}
+          </tr>
+      </thead>
+      <tbody>
+          {% for material, value in materials.items %}
+          <tr>
+              <!-- {% for i in "0123456789ABCD" %} -->
+                  <!-- {% if forloop.parentloop.counter0|divisibleby:"2" %} -->
+                      <!-- {% if i == "0" %} -->
+                          <td>{{ material }}</td>
+                      <!-- {% elif i == "1" %} -->
+                          <td>{{ value }}</td>
+                      <!-- {% else %} -->
+                          <td></td>
+                      <!-- {% endif %} -->
+                  <!-- {% else %} -->
+                      <!-- {% if i == "7" %} -->
+                          <!-- <td>{{ material }}</td> -->
+                      <!-- {% elif i == "8" %} -->
+                          <!-- <td>{{ value }}</td> -->
+                      <!-- {% else %} -->
+                          <!-- <td></td> -->
+                      <!-- {% endif %} -->
+                  <!-- {% endif %} -->
+              <!-- {% endfor %} -->
+          </tr>
+
+
+          
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+
+{% endblock %}

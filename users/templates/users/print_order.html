@@ -1,0 +1,145 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+{% load static %}
+
+<link href="{% static 'css/print_order.css' %}" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Table</title>
+    <style>
+        /* General table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: right;
+        }
+        /* Hide QR code by default */
+        #qr-code {
+            display: none;
+        }
+        /* Print-specific styling */
+        @media print {
+            table {
+                table-layout: auto; /* Ensure table adjusts based on content */
+                width: auto; /* Adjust width to content */
+            }
+            th, td {
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+            #qr-code {
+                display: block;
+                position: fixed;
+                bottom: 10px;
+                left: 10px;
+                width: 100px; /* Adjust size as needed */
+                height: 100px; /* Adjust size as needed */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-center mb-4">فرم درخواست و حواله کالا</h1>
+    <div class="container">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    {% for header in headers %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Initial rows are generated here by Django, but will be replaced by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <!-- QR Code Container -->
+    <div id="qr-code"></div>
+
+    <!-- Include QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        function fillTable() {
+            // Fetch the table body element
+            const tbody = document.getElementById('table-body');
+
+            // Example data to fill the table (you can fetch this dynamically from Django or an API)
+            const data = [
+                {% for material, value in materials.items %}
+                    ["{{ material }}", "{{ value }}"],
+                {% endfor %}
+            ];
+
+            // Clear existing rows
+            tbody.innerHTML = '';
+
+            // Calculate the number of rows needed
+            const numRows = Math.ceil(data.length / 2);
+
+            // Iterate through data and fill the table
+            for (let i = 0; i < numRows; i++) {
+                const tr = document.createElement('tr');
+
+                // Create cells for each row
+                for (let j = 0; j < 14; j++) {
+                    const td = document.createElement('td');
+
+                    // Determine the index in the data array based on column position
+                    let dataIndex;
+                    if (j === 0 || j === 1) {
+                        dataIndex = i * 2;
+                    } else if (j === 7 || j === 8) {
+                        dataIndex = i * 2 + 1;
+                    }
+
+                    // Fill the cell with material name or value
+                    if (dataIndex < data.length) {
+                        if (j === 0 || j === 7) {
+                            td.textContent = data[dataIndex][0]; // material name
+                        } else if (j === 1 || j === 8) {
+                            td.textContent = data[dataIndex][1]; // material value
+                        }
+                    }
+
+                    tr.appendChild(td);
+                }
+
+                tbody.appendChild(tr);
+            }
+        }
+
+        function generateQRCode() {
+            const qrCodeContainer = document.getElementById('qr-code');
+            const url = window.location.href; // URL of the current page
+            new QRCode(qrCodeContainer, {
+                text: url,
+                width: 100,
+                height: 100
+            });
+        }
+
+        // Call the fillTable function when the window finishes loading
+        window.onload = function() {
+            fillTable();
+            generateQRCode();
+        };
+
+        // Print the page once everything is loaded
+        window.onafterprint = function() {
+            document.getElementById('qr-code').innerHTML = '';
+        };
+
+        window.onbeforeprint = function() {
+            generateQRCode();
+        };
+    </script>
+</body>
+{% endblock %}
