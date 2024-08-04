@@ -2,7 +2,7 @@ from django.urls import path
 from .views import home, profile, RegisterView,tools \
         ,my_orders,add_raw_material,post_edit_quil\
         ,create_order,add_mother_material,show_order,snapp,show_restaurant_list,\
-        restaurant_food_list,add_restaurant,print_order
+        restaurant_food_list,add_restaurant,print_order,foodRawMaterials,addfoodrawmaterial,show_food_material
 
 urlpatterns = [
     path('', home, name='users-home'),
@@ -10,6 +10,9 @@ urlpatterns = [
     path('profile/', profile, name='users-profile'),
     path('tools/',tools, name='tools'),
     path('tools/snapp',snapp, name='tools'),
+    path('tools/foodrawmaterials',foodRawMaterials, name='foodRawMaterials'),
+    path('tools/foodrawmaterials/<int:id>',show_food_material, name='foodRawMaterials'),
+    path('tools/add_food_raw_material',addfoodrawmaterial, name='addfoodrawmaterial'),
 
     # path('tools/snapp/اصفهان/<str:res_name>',restaurant_food_list, name='tools'),
 

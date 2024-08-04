@@ -12,6 +12,16 @@ import time
 import os
 import json
 
+
+if os.name =='nt':
+    from webdriver_manager.chrome import ChromeDriverManager
+
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.chrome.service import Service
+
+
 CACHE_PATH = 'cache/'
 
 PRICE_RES_CACHE_PATH = 'snapp_discount/cache/cities'
@@ -24,11 +34,17 @@ class web_driver():
         
 
     def create_driver(self):
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("detach", True)
-        options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome('./chromedriver',options=options)
-     
+        print(os.name)
+        if os.name !='nt':
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option("detach", True)
+            options.add_argument("--start-maximized")
+            self.driver = webdriver.Chrome('./chromedriver',options=options)
+        
+
+        else:
+            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
 
     def wait(self,auto=True,time=0):
         if auto:
@@ -296,7 +312,7 @@ class json_cache():
 if __name__=='__main__':
     web = get_foods()
     web.open_snap_food()
-    web.set_city_page()
+    #web.set_city_page()
     web.get_all_restaurants_name_city()
     web.search_in_res_names()
     web.search_restaurant(name='فست فود رستوران سارا (جی)')

@@ -255,3 +255,19 @@ class SnappFoodList(models.Model):
     
     class Meta:
         ordering = ['-name']
+
+
+
+class FoodRawMaterial(models.Model):
+    
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=200)
+    data = models.JSONField(blank=True,null=True)
+    
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['-name']

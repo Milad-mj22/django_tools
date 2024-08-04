@@ -17,6 +17,7 @@ from .models import User,jobs , Projects , raw_material,SnappFoodList
 from .models import Profile as model_profile
 from .models import create_order as ModelCreateOrder
 from .models import mother_material as MotherMaterial
+from .models import FoodRawMaterial 
 from django.views.decorators.csrf import csrf_protect
 import os
 
@@ -460,32 +461,143 @@ def print_order(request,id):
         except Exception as e:
             print(e)
 
-    # materials = eval(materials.content)
-    # if request.method == 'GET':
-
-        # context = {'form': PostForm_tinymce(instance=post), 'id': id}
-        # return render(request,'users/create_post.html',context)
-        # materials = raw_material.objects.all()
-        
 
     headers = ['کالا','درخواستی','ارسالی','تحویلی','مانده','خروج','مانده','کالا','درخواستی','ارسالی','تحویلی','مانده','خروج','مانده']
 
     return render(request, 'users/print_order.html', {'materials': new_materials,'edit':False,'headers':headers})
 
-
-   
-    # elif request.method == 'POST':
-
-    #     data = dict(request.POST.dict())
-    #     data.pop('csrfmiddlewaretoken','Not found')
-
-
-    #     b = ModelCreateOrder.objects.update_or_create(author = request.user , content = data)
-
-
-    #     messages.success(request, 'The post has been updated successfully.')
-    #     return redirect('/profile/my_orders')
-        # else:
-        #     messages.error(request, 'Please correct the following errors:')
-        #     return render(request,'posts/post_form.html',{'form':form})
         
+
+
+
+@login_required
+def foodRawMaterials(request):
+
+    print('show snapp page')
+    restaurants = FoodRawMaterial.objects.all().order_by('-name')
+
+
+    return render(request, 'users/food_raw_materials.html',{'foods':restaurants})
+
+
+
+
+
+
+def addfoodrawmaterial(request):
+
+    if request.method == 'POST':
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+        food_name = data['food_name']
+        data.pop('food_name','Not found location')
+
+        if  FoodRawMaterial.objects.filter(name=food_name).first()==None:
+
+
+            user = User.objects.get(pk=request.user.id)
+
+            values ={}
+
+            for field,value in data.items():
+                # try:
+                    if float(value)>0:
+                        values[field]=value
+                        # item = raw_material.objects.filter(name=field).first()
+                        # item_id = item.id
+                        # item = raw_material.objects.get(id=item_id)
+                        # b=AddtoStore.objects.create(item=item,location=location,count =value, author = user)
+                        # update_store(item=item,location=location,value=value)
+                        # print(b)
+                # except:
+                # print('error in add to store')
+            b = FoodRawMaterial.objects.update_or_create(name= food_name, data = values)
+            messages.success(request,'New Item Successfully Added')
+
+            return redirect('/tools/foodrawmaterials')
+        
+        else:
+            print('mojooooooodddddd')
+            return redirect('/tools/foodrawmaterials')
+
+
+
+    else:
+        mother_materials = MotherMaterial.objects.prefetch_related('mother_material').all()
+        foods = FoodRawMaterial.objects.all()
+        food_list =[]
+        for food in foods:
+            food_list.append(food.name)
+        return render(request, 'users/create_food_raw_material.html', {'mother_materials': mother_materials,'food_names':food_list})
+    
+
+
+
+def add_count_to_materials(mother_materials,data):
+
+    # mother_materials = MotherMaterial.objects.all()
+
+    # Create a dictionary to store submaterials for each mother material
+    materials_with_submaterials = {}
+
+    
+
+    # Iterate through each mother material and fetch related submaterials
+    for mother_material in mother_materials:
+        submaterials = mother_material.mother_material.all()
+        for submaterial in submaterials :
+            # count = fullStore.objects.filter(item = submaterial.id).all()
+            if submaterial.name in data:
+                submaterial.count = data[submaterial.name]
+        # materials_with_submaterials[mother_material] = submaterials
+
+    return mother_materials
+
+
+
+def show_food_material(request,id):
+        
+    if request.method == 'POST':
+        data = dict(request.POST.dict())
+        data.pop('csrfmiddlewaretoken','Not found')
+        food_name = data['food_name']
+
+        
+
+
+
+        data.pop('food_name','Not found location')
+        user = User.objects.get(pk=request.user.id)
+
+        values ={}
+
+        for field,value in data.items():
+            try:
+                if value !='':
+                    if float(value)>0:
+                        values[field]=value
+            except:
+                print('error in add to store')
+
+        
+        food = FoodRawMaterial.objects.filter(name=food_name).first()
+        food.data=values
+        food.save()
+        # _,ret = FoodRawMaterial.objects.update(name= food_name, data = values)
+        # if ret:
+        #     messages.success(request,'New Item Successfully Added')
+
+        return redirect('/tools/foodrawmaterials')
+        # else:
+        #     print('Error in update data')
+        #     return redirect('/tools/foodrawmaterials')
+
+  
+    else:
+        mother_materials = MotherMaterial.objects.prefetch_related('mother_material').all()
+        # foods = FoodRawMaterial.objects.all()
+        food_name = FoodRawMaterial.objects.filter(id=id).first()
+        if food_name.data is not None:
+            add_count_to_materials(mother_materials,food_name.data)
+        return render(request, 'users/show_food_raw_material.html', {'mother_materials': mother_materials,'food_name':food_name})
+    

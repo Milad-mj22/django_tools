@@ -41,7 +41,7 @@ class get_price():
 
         path = os.path.join('snapp_discount/cache/cities/{}/{}.json'.format(self.city,self.res_name))
 
-        with open(path, 'r') as f:
+        with open(path, 'r',encoding='utf-8') as f:
             data = json.load(f)
 
         return data
@@ -52,7 +52,7 @@ if __name__=='__main__':
 
     import json
 
-    with open('snapp_discount/cache/links/esfahan_links.json', 'r') as f:
+    with open('snapp_discount\cache\cities\Esfahan\کنتاکی.json', 'r',encoding='utf-8') as f:
         data = json.load(f)
 
 
