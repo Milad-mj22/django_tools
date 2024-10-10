@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalali Datepicker Example</title>
+
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/persian.datepicker.css">
+
+
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .form-control {
+            width: 250px;
+            padding: 10px;
+            margin-bottom: 20px;
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Jalali Datepicker Example</h2>
+
+    <!-- Date Input Fields -->
+    <label for="date_from">از تاریخ:</label>
+    <input type="text" id="date_from" class="form-control" placeholder="از تاریخ">
+
+    <label for="date_to">تا تاریخ:</label>
+    <input type="text" id="date_to" class="form-control" placeholder="تا تاریخ">
+
+    <!-- Local JavaScript -->
+    <!-- href="{% static 'js/persian.datepicker.js' %}" -->
+
+
+</body>
+
+</html>

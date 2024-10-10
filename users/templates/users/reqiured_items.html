@@ -1,0 +1,115 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+
+
+
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+
+
+
+<style>
+
+
+
+
+
+.text-center {
+  text-align: center;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;  /* Align buttons to center */
+  gap: 15px;  /* Space between buttons */
+  margin-top: 20px;
+}
+
+.custom-btn {
+  width: 120px; /* Adjust button width if needed */
+  margin: 0;    /* Ensure buttons have no extra margin */
+}
+
+.custom-btn {
+    padding: 12px 20px;  /* Increase padding for a larger click area */
+    font-size: 1rem;  /* Make the text slightly larger */
+    border-radius: 50px;  /* Rounded buttons */
+    background-color: #f7d041e1;  /* Primary color (golden) */
+    border: none;  /* Remove the default border */
+    color: white;  /* White text color */
+    text-transform: uppercase;  /* Uppercase text for a modern look */
+    transition: background-color 0.3s ease, transform 0.2s ease;  /* Smooth transition for hover effects */
+    display: block;  /* Ensure it behaves well within flexbox */
+    text-align: center;  /* Center text */
+    width: 100%;  /* Full width inside button group */
+}
+
+.custom-btn:hover {
+    background-color: #b89734;  /* Darken the button on hover */
+    transform: translateY(-3px);  /* Slight lift on hover */
+    text-decoration: none;  /* Remove underline on hover */
+}
+
+.custom-btn:active {
+    transform: translateY(0);  /* No lift when active */
+    background-color: #8f7230;  /* Darker background when active */
+}
+
+.disabled-link {
+  pointer-events: none; /* Disable clicking */
+  cursor: not-allowed;  /* Show "disabled" cursor */
+  opacity: 0.5;        /* Fade to show it's disabled */
+}
+
+</style>
+
+
+
+
+<div class="container">
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">مواد اولیه کسری</h1>
+    </div>
+    <div class="container mt-4">
+        <div class="card shadow-lg rounded-lg p-4 mb-4">
+       
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ماده اولیه</th>
+                        <th>مقدار</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item,quantity in required_items.items %}
+                    <tr>
+                        <td>{{ item}}</td>
+                        <td>{{ quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+            <div class="text-center">
+                <div class="button-group">
+                    <a href="javascript:void(0);" class="btn btn-primary custom-btn disabled-link" aria-disabled="true">ویرایش &rarr;</a>
+
+                  <a href="/orders/print_order/{{ order.id }}" class="btn btn-primary custom-btn">ارسال به مسئول خرید &rarr;</a>
+                </div>
+              </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+    

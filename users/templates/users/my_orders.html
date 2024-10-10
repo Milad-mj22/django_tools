@@ -1,138 +1,379 @@
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title %}
+{% block title %}صفحه اصلی{% endblock title %}
 {% block content %}
 {% load static %}
 <link href="{% static 'css/profile_page.css' %}" rel="stylesheet">
-
+<!-- <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet"> -->
+<!-- <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet"> -->
+<html lang="fa" dir="rtl"></html>
 <style>
+    @font-face {
+        font-family: 'B Zar';
+        src: url('/fonts/BZar.woff2') format('woff2'),
+              url('/fonts/BZar.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+  body {
+    direction: rtl;
+    font-family: 'BNazanin';
+    background-color: #f7f7f7;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
   .card {
     border: none;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .card:hover {
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
   }
 
   .card-header {
-    background-color: #f8f9fa;
-    padding: 10px 20px;
-    border-bottom: 1px solid #ddd;
+    background-color: #f7d041cc;
+    color: #ffffff09;
+    padding: 2px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .card-title {
-    color: #333;
-    font-size: 1.5rem;
-    margin-bottom: 0;
+    font-size: 1.25rem;
+    margin: 0;
+    flex: 1 1 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    
+  }
+
+  .card-info {
+    font-size: 1.1rem;
+    color: #080808;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
   }
 
   .color-range {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    margin-right: 5px;
-    cursor: pointer;
+    margin-left: 5px;
   }
 
-  .color-range.red {
+  .red {
     background-color: #ff6347;
   }
 
-  .color-range.green {
+  .green {
     background-color: #28a745;
   }
 
-  .color-range.blue {
+  .blue {
     background-color: #007bff;
   }
 
   .card-body {
+    direction: rtl;
+
     padding: 20px;
+    background-color: #fff;
   }
 
   .card-text {
-    color: #666;
+    font-size: 0.875rem;
+    color: #777777;
+    margin-bottom: 20px;
+  }
+
+  .box {
+    text-decoration: 'rtl';
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+    text-align: right;
     font-size: 1rem;
-    margin-bottom: 5px;
   }
 
-  .btn {
-    background-color: #ff6347;
-    border-color: #ff6347;
-    color: #fff;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
+  .box .item-label {
+    margin-right: 15px; /* Apply right margin only on label text */
+    display: inline-block;
+}
 
-  .btn:hover {
-    background-color: #ff4500;
-    border-color: #ff4500;
+  .box-title {
+  text-align: center; /* Center the heading */
+  margin-bottom: 5px; /* Remove default margin */
+  }
+  .box h5 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
   }
 
   .item {
     font-weight: bold;
     color: #333;
-    margin-right: 5px;
+    margin-bottom: 5px;
   }
 
   .value {
-    color: #666;
-  }
-
-  .row-divider {
-    border-bottom: 1px solid #ddd;
+    color: #555;
     margin-bottom: 10px;
-    padding-bottom: 10px;
   }
 
-  /* Add padding to the top of the content container */
-  .content-container {
-    padding-top: 2rem; /* Adjust this value to increase/decrease the space */
+  .btn-primary {
+    background-color: #d4af37;
+    border: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
   }
+
+  .btn-primary:hover {
+    background-color: #b89734;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .col-lg-4,
+  .col-md-6,
+  .col-sm-12 {
+    flex: 1 1 calc(33.33% - 20px);
+    max-width: calc(33.33% - 20px);
+  }
+
+  @media (max-width: 768px) {
+    .col-lg-4,
+    .col-md-6 {
+      flex: 1 1 calc(50% - 20px);
+      max-width: calc(50% - 20px);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .col-lg-4,
+    .col-md-6,
+    .col-sm-12 {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+  }
+
+
+
+.text-center {
+  text-align: center;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;  /* Align buttons to center */
+  gap: 15px;  /* Space between buttons */
+  margin-top: 20px;
+}
+
+.custom-btn {
+  width: 120px; /* Adjust button width if needed */
+  margin: 0;    /* Ensure buttons have no extra margin */
+}
+
+.custom-btn {
+    padding: 12px 20px;  /* Increase padding for a larger click area */
+    font-size: 1rem;  /* Make the text slightly larger */
+    border-radius: 50px;  /* Rounded buttons */
+    background-color: #f7d041e1;  /* Primary color (golden) */
+    border: none;  /* Remove the default border */
+    color: white;  /* White text color */
+    text-transform: uppercase;  /* Uppercase text for a modern look */
+    transition: background-color 0.3s ease, transform 0.2s ease;  /* Smooth transition for hover effects */
+    display: block;  /* Ensure it behaves well within flexbox */
+    text-align: center;  /* Center text */
+    width: 100%;  /* Full width inside button group */
+}
+
+.custom-btn:hover {
+    background-color: #b89734;  /* Darken the button on hover */
+    transform: translateY(-3px);  /* Slight lift on hover */
+    text-decoration: none;  /* Remove underline on hover */
+}
+
+.custom-btn:active {
+    transform: translateY(0);  /* No lift when active */
+    background-color: #8f7230;  /* Darker background when active */
+}
+
+@media (max-width: 576px) {
+    .button-group {
+        flex-direction: column;  /* Stack buttons vertically on small screens */
+        align-items: center;  /* Center-align the buttons */
+    }
+
+    .custom-btn {
+        width: 100%;  /* Make buttons full-width on small screens */
+        text-align: center;  /* Center the text */
+    }
+}
+
+.item-available {
+    background-color: rgba(144, 238, 144, 0.842);
+}
+
+.item-unavailable {
+    background-color: rgba(255, 0, 0, 0.384);
+}
+
+
+/* Page Title Card with Light Gradient */
+.page-title-card {
+    background: linear-gradient(135deg, #fffde7, #F7D141); /* Light yellow gradient */
+    text-align: center; /* Horizontally center the text */
+    border: none;
+    display: flex;
+    align-items: center; /* Vertically center the text */
+    justify-content: center; /* Horizontally center the text */
+    height: 70px; /* Set height for the card to allow vertical centering */
+}
+
+/* Center align the page title */
+h1.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #7d7c7c;
+    margin-bottom: 0;
+}
+
+
+
+
+
+.toggle-btn {
+  background-color: #007bff; /* Change to your preferred color */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Optional: Add a focus ring */
+}
+
+.box {
+  padding: 10px;
+  margin-top: 5px;
+  background-color: #f8f9fa; /* Light background for the content */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+
+
 
 
 </style>
 
+
+
+
+
 <div class="container">
-  <div class="row justify-content-center">
+  <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+    <h1 class="page-title">سفارش ها</h1>
+  </div>
+
+  <div class="row">
     {% for order in orders %}
-    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+    <div class="col-lg-4 col-md-6 col-sm-12">
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">{{ order.title }}</h2>
-          <div class="color-range red"></div>
-          <div class="color-range green"></div>
-          <div class="color-range blue"></div>
+          <div class="card-info">
+            نام کاربر : {{ order.author }}
+         </div>
+         <div class="card-info">
+           تاریخ بروزرسانی :  {{ order.updated_at }}
         </div>
+          <div>
+            <span class="color-range red"></span>
+            <span class="color-range green"></span>
+            <span class="color-range blue"></span>
+          </div>
+        </div>
+
         <div class="card-body">
-          <p class="card-text text-muted h6">{{ order.author }} | {{ order.updated_at }}</p>
-          {% for parm, values in order.content.items %}
-
-          <!-- {% with int_value=values|default:"" %} -->
-          {% if values != 0 %}
-
-
-          <div class="row row-divider">
-            <div class="col-md-6">
-              <span class="item">{{ parm }}</span>
-            </div>
-            <div class="col-md-6">
-              <span class="value">{{ values }}</span>
-            </div>
+          <!-- Toggle for Foods -->
+          <button class="toggle-btn" id="toggle-foods-{{ order.id }}">نام غذاها</button>
+          <div class="box" id="foods-box-{{ order.id }}" style="display: none;">
+            {% for food_name, quantity in order.night_order.items %}
+            {% if quantity != 0 %}
+            <div class="item">{{ food_name }} : {{ quantity }}</div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        
+          <!-- Toggle for Raw Materials -->
+          <button class="toggle-btn" id="toggle-materials-{{ order.id }}">مواد اولیه</button>
+          <div class="box" id="materials-box-{{ order.id }}" style="display: none;">
+            {% for material, data in order.content.items %}
+            {% if data.amount and data.exist is not None %}
+              <div class="item {% if data.exist %}item-available{% else %}item-unavailable{% endif %}">
+                <div class="item-label">
+                  {{ material }} : {{ data.amount }}
+                </div>
+              </div>
+            {% endif %}
+            {% endfor %}
           </div>
 
-          {% endif %}
-          <!-- {% endwith %} -->
-          
-          {% endfor %}
           <div class="text-center">
-            {% if order.created_at %}
-            <a href="/orders/edit_order/{{ order.id }}" class="btn btn-primary">Edit &rarr;</a>
-            {% endif %}
-            <a href="/orders/show_order/{{ order.id }}" class="btn btn-primary">Preview &rarr;</a>
-            <a href="/orders/print_order/{{ order.id }}" class="btn btn-primary">Print &rarr;</a>
+            <div class="button-group">
+              {% if order.created_at %}
+              <a href="/orders/edit_order/{{ order.id }}" class="btn btn-primary custom-btn">ویرایش &rarr;</a>
+              {% endif %}
+              <a href="/orders/print_order/{{ order.id }}" class="btn btn-primary custom-btn">چاپ &rarr;</a>
+              <a href="/orders/show_flow/{{ order.id }}" class="btn btn-primary custom-btn">چرخه &rarr;</a>
+            </div>
           </div>
         </div>
       </div>
@@ -140,5 +381,61 @@
     {% endfor %}
   </div>
 </div>
+
+
+
+
+
+<!-- JavaScript at the bottom -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  console.log('Script loaded'); // Debugging: Confirm script is running
+
+  // Select all the toggle buttons for foods and materials
+  var toggleFoodsButtons = document.querySelectorAll("[id^='toggle-foods-']");
+  var toggleMaterialsButtons = document.querySelectorAll("[id^='toggle-materials-']");
+  
+  // Auto-open the first order
+  if (toggleFoodsButtons.length > 0 && toggleMaterialsButtons.length > 0) {
+    var firstOrderId = toggleFoodsButtons[0].id.split('-').pop(); // Get the first order ID
+    var firstFoodsBox = document.getElementById("foods-box-" + firstOrderId);
+    var firstMaterialsBox = document.getElementById("materials-box-" + firstOrderId);
+
+    if (firstFoodsBox) {
+      firstFoodsBox.style.display = "block"; // Automatically open the first foods box
+    }
+    if (firstMaterialsBox) {
+      firstMaterialsBox.style.display = "block"; // Automatically open the first materials box
+    }
+  }
+
+  // Loop through the foods toggle buttons and add event listeners
+  toggleFoodsButtons.forEach(function(toggleButton) {
+    var orderId = toggleButton.id.split('-').pop(); // Get the unique order ID from the button ID
+    var foodsBox = document.getElementById("foods-box-" + orderId);
+    
+    toggleButton.addEventListener("click", function() {
+      if (foodsBox) {
+        foodsBox.style.display = (foodsBox.style.display === "none") ? "block" : "none";
+        console.log('Foods toggle clicked for order:', orderId); // Debugging: Confirm toggle works
+      }
+    });
+  });
+
+  // Loop through the materials toggle buttons and add event listeners
+  toggleMaterialsButtons.forEach(function(toggleButton) {
+    var orderId = toggleButton.id.split('-').pop(); // Get the unique order ID from the button ID
+    var materialsBox = document.getElementById("materials-box-" + orderId);
+    
+    toggleButton.addEventListener("click", function() {
+      if (materialsBox) {
+        materialsBox.style.display = (materialsBox.style.display === "none") ? "block" : "none";
+        console.log('Materials toggle clicked for order:', orderId); // Debugging: Confirm toggle works
+      }
+    });
+  });
+});
+
+</script>
 
 {% endblock %}

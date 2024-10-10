@@ -1,0 +1,122 @@
+body {
+    font-family: 'B Nazanin'; /* Ensure you have the B Nazanin font included in your base template */
+    direction: rtl;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background-color: #ffffff;
+    padding: 10px;
+    align-items: center;
+}
+
+.grid-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.snapp-grid-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.grid-item {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.snapp-grid-item {
+    background: linear-gradient(145deg, #89f175, #018f08);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.grid-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 15px 15px 30px rgba(244, 255, 86, 0.61), -15px -15px 30px rgba(255, 255, 255, 0.8);
+}
+
+.snapp-grid-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 15px 15px 30px rgba(0, 0, 0, 0.2), -15px -15px 30px rgba(255, 255, 255, 0.8);
+}
+
+.card-body {
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 700;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #c6ee15;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.snapp-btn-primary {
+    background-color: #096d17;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #c6ee15;
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+
+
+.btn-primary:focus, .snapp-btn-primary:focus {
+outline: none; /* Removes the default focus outline */
+}
+
+.btn-primary:active, .snapp-btn-primary:active {
+box-shadow: none; /* Remove any box-shadow on active */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}

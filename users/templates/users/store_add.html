@@ -1,0 +1,271 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script> <!-- Font Awesome for icons -->
+<html lang="fa" dir="rtl"></html>
+<script>
+    function toggleSubmaterials(id) {
+        var submaterials = document.getElementById(id);
+        if (submaterials.style.display === "none" || submaterials.style.display === "") {
+            submaterials.style.display = "block";
+        } else {
+            submaterials.style.display = "none";
+        }
+    }
+
+    function filterMaterials() {
+        const input = document.getElementById('search-bar');
+        const filter = input.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        let hasVisibleItem = false;
+
+        cards.forEach(card => {
+            const cardText = card.innerText.toLowerCase();
+            const submaterials = card.querySelector('.submaterials');
+
+            if (cardText.includes(filter)) {
+                card.style.display = "";  // Show the card
+                hasVisibleItem = true;
+
+                if (submaterials) {
+                    submaterials.style.display = "block";  // Show submaterials
+                    const subCards = submaterials.querySelectorAll('.submaterials .card');
+
+                    subCards.forEach(subCard => {
+                        const subCardText = subCard.innerText.toLowerCase();
+                        if (subCardText.includes(filter)) {
+                            subCard.style.display = "";  // Show subCard if it matches
+                        } else {
+                            subCard.style.display = "none";  // Hide subCard if it doesn't match
+                        }
+                    });
+                }
+            } else {
+                card.style.display = "none";  // Hide the card
+                if (submaterials) {
+                    submaterials.style.display = "none";  // Hide submaterials
+                    
+                }
+            }
+        });
+
+        // Scroll to the first match
+        // if (hasVisibleItem) {
+        //     const firstMatch = document.querySelector('.card:not([style*="display: none"])');
+        //     if (firstMatch) {
+        //         firstMatch.scrollIntoView({ behavior: 'smooth' });
+        //     }
+        // }
+    }
+
+    function handleSearchInput() {
+        const input = document.getElementById('search-bar');
+        const value = input.value.trim();
+        
+        // Close all submaterials when search bar is cleared
+        if (value === "") {
+            const allSubmaterials = document.querySelectorAll('.submaterials');
+            allSubmaterials.forEach(submaterials => {
+                submaterials.style.display = "none";
+            });
+
+            // Show all cards when search bar is cleared
+            const allCards = document.querySelectorAll('.card');
+            allCards.forEach(card => {
+                card.style.display = "";  // Show all cards
+            });
+        }
+
+        // Apply filter regardless of whether search bar is cleared or not
+        filterMaterials();
+    }
+
+    function closeAllTabs() {
+        const allSubmaterials = document.querySelectorAll('.submaterials');
+        allSubmaterials.forEach(submaterials => {
+            submaterials.style.display = "none";
+        });
+    }
+
+
+
+
+
+
+    function changeValue(inputId, increment) {
+    const input = document.getElementById(inputId);
+    let value = parseFloat(input.value) || 0;
+    value += increment;
+    if (value < 0) {
+      value = 0; // Prevent negative values
+    }
+    input.value = value.toFixed(1);
+  }
+
+    // Disable the submit button initially
+    function enableSubmitButton() {
+        const warehouseSelect = document.getElementById('warehouse');
+        const submitBtn = document.getElementById('submit-btn');
+
+        if (warehouseSelect.value !== "") {
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Prevent form submission to show which elements are greater than zero
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const inputs = document.querySelectorAll('.digit-input');
+        let materials = [];
+        inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (value > 0) {
+            const materialName = input.name;
+            materials.push({ name: materialName, value: value });
+        }
+        });
+
+        const warehouseSelect = document.getElementById('warehouse');
+        const warehouseName = warehouseSelect.options[warehouseSelect.selectedIndex].text;
+
+        if (materials.length > 0) {
+        // const confirmMessage = `${warehouseName} هستید شما در حال اضافه کردن موارد زیر به انبار : :\n` + 
+        const confirmMessage = `شما در حال اضافه کردن موارد زیر به انبار ${warehouseName} هستید :  \n` + 
+                                materials.map(m => `${m.name}: ${m.value}`).join('\n');
+        if (confirm(confirmMessage)) {
+            event.target.submit(); // If confirmed, submit the form
+        }
+        } else {
+        alert("No items greater than zero were selected.");
+        }
+    }
+
+    // Change value function for increment/decrement buttons
+    function changeValue(inputId, increment) {
+        const input = document.getElementById(inputId);
+        let value = parseFloat(input.value) || 0;
+        value += increment;
+        if (value < 0) {
+        value = 0; // Prevent negative values
+        }
+        input.value = value.toFixed(1);
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Show success popup (can use Bootstrap modal or simple alert)
+        alert('مقادیر مورد نظر با موفقیت اضافه گردید')
+
+        // Wait for a few seconds (e.g., 2 seconds) then redirect
+        setTimeout(function() {
+            window.location.href = "{% url 'success_page' %}";
+        }, 2000);  // 2-second delay
+        });
+    });
+
+
+
+
+
+</script>
+
+
+<div class="container">
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">افزودن به انبار</h1>
+    </div>
+
+    <!-- Search Bar with Close All Tabs Button -->
+    <div class="mb-4 d-flex align-items-center">
+        <input type="text" id="search-bar" oninput="handleSearchInput()" class="form-control" placeholder="جستجو بر اساس نام یا توضیحات...">
+        <button type="button" onclick="closeAllTabs()" class="btn btn-light ms-2" style="margin-right: 5px;">
+            <i class="fa-solid fa-refresh"></i> <!-- Refresh -->
+        </button>
+    </div>
+
+    <form method="post" onsubmit="return handleSubmit(event)">
+        {% csrf_token %}
+
+        <!-- Materials -->
+        <div>
+            {% for mother_material in mother_materials %}
+                <div class="card">
+                    <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                        {{ mother_material.describe }} : {{ mother_material.name }}
+                    </a>
+                    <div id="submaterials-{{ mother_material.id }}" class="submaterials" style="display: none;">
+                        {% for field in mother_material.mother_material.all %}
+                            <div class="col">
+                                <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <span style="font-size: smaller;">{{ field.describe }}</span> 
+                                            <span style="font-size: smaller;">{{ mother_material.describe }}</span> :
+                                            {{ field.name }}
+                                        </h5>
+
+                                        <div class="input-wrapper">
+                                            <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
+                                            <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
+                                            <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">{{ field.unit }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Warehouse Dropdown -->
+        <div class="mb-4 d-flex align-items-center" style="width: 100%;">
+            <label for="warehouse" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
+                انتخاب انبار
+            </label>
+            <select id="warehouse" name="warehouse" class="form-select shadow-sm" style="flex: 1; direction: rtl; text-align: right;" onchange="enableSubmitButton()">
+                <option value="" disabled selected>انتخاب انبار...</option>
+                {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-block" id="submit-btn" disabled>ثبت</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+  function changeValue(inputId, increment) {
+    const input = document.getElementById(inputId);
+    let value = parseFloat(input.value) || 0;
+    value += increment;
+    if (value < 0) {
+      value = 0; // Prevent negative values
+    }
+    input.value = value.toFixed(1);
+  }
+
+</script>
+
+
+
+
+
+{% endblock %}

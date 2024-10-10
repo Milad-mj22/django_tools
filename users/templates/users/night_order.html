@@ -1,0 +1,147 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+
+<script>
+    function toggleSubmaterials(id) {
+        var submaterials = document.getElementById(id);
+        if (submaterials.style.display === "none" || submaterials.style.display === "") {
+            submaterials.style.display = "block";
+        } else {
+            submaterials.style.display = "none";
+        }
+    }
+
+    function changeValue(inputId, increment) {
+        const input = document.getElementById(inputId);
+        let value = parseFloat(input.value) || 0;
+        value += increment;
+        if (value < 0) {
+            value = 0; // Prevent negative values
+        }
+        input.value = value.toFixed(1);
+    }
+
+    function filterFields() {
+        // Get the value of the search input
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        // Get all the mother_material containers
+        const motherMaterials = document.getElementsByClassName('mother-material-card');
+
+        // Loop through each mother_material
+        Array.from(motherMaterials).forEach(function(motherMaterial) {
+            let hasVisibleFields = false;
+
+            // Get all the fields within the current motherMaterial
+            const fields = motherMaterial.getElementsByClassName('field-card');
+
+            // Loop through the fields and toggle display based on match
+            Array.from(fields).forEach(function(field) {
+                const fieldName = field.querySelector('.card-title').innerText.toLowerCase();
+                if (fieldName.includes(searchInput)) {
+                    field.style.display = ''; // Show
+                    hasVisibleFields = true;
+                } else {
+                    field.style.display = 'none'; // Hide
+                }
+            });
+
+            // Show or hide the entire mother_material based on whether it has any visible fields
+            if (hasVisibleFields) {
+                motherMaterial.style.display = ''; // Show
+            } else {
+                motherMaterial.style.display = 'none'; // Hide
+            }
+
+            // If the search input is cleared, collapse all open tabs
+            if (searchInput === '') {
+                const submaterials = motherMaterial.getElementsByClassName('submaterials');
+                Array.from(submaterials).forEach(function(submaterial) {
+                    submaterial.style.display = 'none'; // Close all submaterial sections
+                });
+            }
+        });
+    }
+
+
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const inputs = document.querySelectorAll('.digit-input');
+        let materials = [];
+        inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (value > 0) {
+            const materialName = input.name;
+            materials.push({ name: materialName, value: value });
+        }
+        });
+
+        
+        if (materials.length > 0) {
+        // const confirmMessage = `${warehouseName} هستید شما در حال اضافه کردن موارد زیر به انبار : :\n` + 
+        const confirmMessage = `شما در حال ثبت سفارش موارد زیر هستید :  \n` + 
+                                materials.map(m => `${m.name}: ${m.value}`).join('\n') +
+                                ' عدد' ;
+        if (confirm(confirmMessage)) {
+            event.target.submit(); // If confirmed, submit the form
+        }
+        } else {
+        alert("No items greater than zero were selected.");
+        }
+    }
+
+
+
+
+
+</script>
+
+<div class="container">
+
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">ثبت سفارش شب</h1>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar mb-4">
+        <input type="text" id="searchInput" onkeyup="filterFields()" placeholder="جست و جو ...." class="form-control">
+    </div>
+
+    <form method="post" onsubmit="return handleSubmit(event)">
+        {% csrf_token %}
+        
+        {% for mother_material in mother_foods %}
+            <div class="card mother-material-card">
+                <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                    {{ mother_material.name }} -- حد سفارش : {{mother_material.producible_quantity}}
+                </a>
+                <div id="submaterials-{{ mother_material.id }}" class="submaterials">
+                    {% for field in mother_material.mother_food_id.all %}
+                        <div class="col field-card">
+                            <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                                <div class="card-body">
+                                    <h5 class="card-title"> {{ field.name }} -- حد سفارش : {{field.producible_quantity}}</h5>
+                                    <div class="input-wrapper">
+                                        <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
+                                        <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
+                                        <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+      
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

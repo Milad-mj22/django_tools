@@ -1,0 +1,71 @@
+{% extends "users/flow_page.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content2 %}
+
+{% load static %}
+
+
+<body>
+
+    
+<div class="container">
+    <h1>نمایش مواد اولیه</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <!-- New Food Name Field on one line with right-aligned label -->
+        <div class="form-group row mt-4">
+
+            <div class="form-group">
+                <label for="food_name" class="floating-label">نام غذا:</label>
+    
+                <input type="text" id="food_name" name="food_name" class="form-control" readonly value="{{food_name}}">
+                </div>
+    
+            <label for="food_name" class="col-sm-2 col-form-label text-right "  style="direction: rtl">نام غذا  </label>
+    
+            </div>
+        <div>
+            {% for mother_material in mother_materials %}
+                <div class="card">
+                    <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                        {{ mother_material.describe }} : {{ mother_material.name }}
+                    </a>
+                    <div id="submaterials-{{ mother_material.id }}" class="submaterials">
+                        {% for field in mother_material.mother_material.all %}
+                            <div class="col">
+                                <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ mother_material.describe }} : {{ field.name }}</h5>
+                                    <div class="input-wrapper">
+                                    <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
+                                    <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="{{field.count}}">
+                                    <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">{{ field.unit }}</span>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+
+  
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+      </div>
+
+
+
+    </form>
+</div>
+</body>
+
+
+{% endblock %}

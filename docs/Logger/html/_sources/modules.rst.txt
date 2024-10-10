@@ -1,7 +1,0 @@
-dorsa_logging
-=============
-
-.. toctree::
-   :maxdepth: 4
-
-   dorsa_logging

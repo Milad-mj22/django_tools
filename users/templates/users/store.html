@@ -1,0 +1,290 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<html lang="fa" dir="rtl"></html>
+
+<script>
+    // Toggle Select All functionality for warehouses
+    function selectAllWarehouses() {
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+        const checkboxes = document.querySelectorAll('.warehouse-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    }
+
+    // Allow only one warehouse selection
+    function selectWarehouse(id) {
+        const checkboxes = document.querySelectorAll('.warehouse-checkbox');
+        checkboxes.forEach(checkbox => {
+            if (checkbox.id !== 'warehouse-checkbox-' + id) {
+                checkbox.checked = false;
+            }
+        });
+
+        // Deselect the "Select All" checkbox when an individual warehouse is selected
+        document.getElementById('select-all-checkbox').checked = false;
+    }
+
+    // Submit the selected warehouse
+    function submitWarehouse() {
+        const checkboxes = document.querySelectorAll('.warehouse-checkbox');
+        let selectedWarehouse = null;
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedWarehouse = checkbox.value;
+            }
+        });
+
+        if (selectedWarehouse) {
+            document.getElementById('warehouse-form').submit(); // Submit the form if a warehouse is selected
+        } else {
+            alert('باید یک انبار انتخاب شود.');
+        }
+    }
+
+    // Filter functionality for Show and All Show (deselect the other filter)
+    function selectFilter(filter) {
+        const showFilter = document.getElementById('show-filter');
+        const allShowFilter = document.getElementById('all-show-filter');
+
+        if (filter === 'show') {
+            allShowFilter.checked = false; // Deselect "All Show" if "Show" is selected
+        } else if (filter === 'all-show') {
+            showFilter.checked = false; // Deselect "Show" if "All Show" is selected
+        }
+    }
+
+
+    const backendEndpoint = "{{ backend_endpoint }}";  // Inject the backend endpoint from Django
+
+    // Toggle the form
+    function toggleForm() {
+        const form = document.getElementById('warehouse-form');
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    // Update the selected parameters
+    function updateSelectedParams() {
+        const selectedWarehousesText = document.getElementById('selected-warehouses');
+        const selectedFiltersText = document.getElementById('selected-filters');
+        
+        if (document.getElementById('select-all-checkbox').checked) {
+            selectedWarehousesText.innerText = "انبار انتخاب‌شده: همه انبارها انتخاب‌شده است";
+        } else {
+            const warehouseCheckboxes = document.querySelectorAll('.warehouse-checkbox');
+            let selectedWarehouse = "هیچ‌یک";
+            warehouseCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedWarehouse = checkbox.nextElementSibling.innerText;
+                }
+            });
+            selectedWarehousesText.innerText = "انبار انتخاب‌شده: " + selectedWarehouse;
+        }
+
+        let selectedFilter = "هیچ‌یک";
+        if (document.getElementById('show-filter').checked) {
+            selectedFilter = "نمایش همه کالا ها";
+        } else if (document.getElementById('all-show-filter').checked) {
+            selectedFilter = "نمایش کالاهای موجود";
+        }
+
+        selectedFiltersText.innerText = "فیلتر انتخاب‌ شده: " + selectedFilter;
+    }
+
+//     // Submit form via AJAX
+function submitForm() {
+    const checkboxes = document.querySelectorAll('.warehouse-checkbox');
+    const showFilter = document.getElementById('show-filter').checked;
+    const allShowFilter = document.getElementById('all-show-filter').checked;
+
+    let selectedWarehouses = [];
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedWarehouses.push(checkbox.value);
+        }
+    });
+
+    // Handle "Select All" case
+    if (document.getElementById('select-all-checkbox').checked) {
+        selectedWarehouses = "all";
+    }
+
+    // Prepare data to send to the server
+    const data = {
+        warehouses: selectedWarehouses,
+        show_all: showFilter,
+        show_available: allShowFilter,
+        csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token
+    };
+
+    console.log('Sending data to backend:', data); // Debug: log the data
+
+    // AJAX request
+    $.ajax({
+        type: 'POST',
+        url: '/profile/store/',  // Update this to the correct endpoint
+        data: data,
+        success: function(response) {
+            // Update materials section with new data
+            const materialsContainer = document.getElementById('materials-container');
+            materialsContainer.innerHTML = ''; // Clear existing materials
+
+            response.mother_materials.forEach(material => {
+                const submaterialsHTML = material.submaterials.map(sub => `
+                    <div class="col">
+                        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <span style="font-size: smaller;">${sub.describe}</span> :
+                                    ${sub.name}  -- موجودی : ${sub.total_quantity} ${sub.unit}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                materialsContainer.innerHTML += `
+                    <div class="card">
+                        <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-${material.id}')">
+                            ${material.describe} : ${material.name} -- موجودی : ${material.total_quantity}
+                        </a>
+                        <div id="submaterials-${material.id}" class="submaterials" style="display: none;">
+                            ${submaterialsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+        },
+        error: function(xhr, status, error) {
+            $('#response-data').html(`<p style="color: red;">Error: ${xhr.responseText}</p>`);
+        }
+    });
+}
+
+
+function toggleSubmaterials(id) {
+        var submaterials = document.getElementById(id);
+        if (submaterials.style.display === "none" || submaterials.style.display === "") {
+            submaterials.style.display = "block";
+        } else {
+            submaterials.style.display = "none";
+        }
+    }
+
+
+
+
+    document.addEventListener('DOMContentLoaded', updateSelectedParams);
+
+</script>
+
+
+
+
+
+<div class="container">
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">نمایش موجودی انبارها</h1>
+    </div>
+
+
+    <!-- Button to open/close the form -->
+    <button type="button" class="btn btn-primary btn-sm" onclick="toggleForm()">ویرایش فیلترها</button>
+
+   <!-- Warehouse Selection and Filters -->
+   <form id="warehouse-form" method="post" style="display: none;"> <!-- Form initially hidden -->
+    {% csrf_token %}
+
+    <div class="card warehouse-selection-card shadow-sm rounded p-3 mb-3">
+        <!-- Select All Checkbox -->
+        <h6 class="filter-title mb-2">انتخاب انبار</h6>
+
+        <div class="form-check select-all-checkbox d-flex align-items-center mb-2">
+            <input type="checkbox" class="form-check-input" id="select-all-checkbox" checked onclick="selectAllWarehouses(); updateSelectedParams();">
+            <label class="form-check-label ms-2" for="select-all-checkbox">انتخاب همه</label>
+        </div>
+
+        <!-- Dynamic Warehouse Checkboxes -->
+        <div class="warehouse-checkboxes">
+            {% for warehouse in warehouses %}
+                <div class="form-check d-flex align-items-center mb-2">
+                    <input type="checkbox" class="form-check-input warehouse-checkbox" id="warehouse-checkbox-{{ warehouse.id }}" value="{{ warehouse.id }}" onclick="selectWarehouse({{ warehouse.id }}); updateSelectedParams();">
+                    <label class="form-check-label ms-2" for="warehouse-checkbox-{{ warehouse.id }}">{{ warehouse.name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Filter Box -->
+    <div class="card filter-box shadow-sm rounded p-3 mb-3">
+        <h6 class="filter-title mb-2">فیلترها</h6>
+
+        <div class="form-check d-flex align-items-center mb-2">
+            <input type="checkbox" class="form-check-input" id="show-filter" checked onclick="selectFilter('show'); updateSelectedParams();">
+            <label class="form-check-label ms-2" for="show-filter">نمایش همه کالا ها</label>
+        </div>
+        <div class="form-check d-flex align-items-center">
+            <input type="checkbox" class="form-check-input" id="all-show-filter"  onclick="selectFilter('all-show'); updateSelectedParams();">
+            <label class="form-check-label ms-2" for="all-show-filter">نمایش کالاهای موجود</label>
+        </div>
+    </div>
+
+        <!-- Submit Button -->
+        <div class="text-end">
+            <button type="button" class="btn btn-primary btn-sm" onclick="submitForm()">اعمال فیلتر ها</button>
+
+
+
+
+        </div>
+    </form>
+
+    <!-- Selected Parameters Card -->
+    <div class="card selected-params-card shadow-sm rounded p-3 mt-3">
+        <h6 class="filter-title mb-2">پارامترهای انتخاب‌شده</h6>
+        <p id="selected-warehouses">انبار انتخاب‌شده: هیچ‌یک</p>
+        <p id="selected-filters">فیلتر انتخاب‌شده: نمایش کالاهای موجود</p>
+    </div>
+</div>
+
+
+
+<!-- Materials -->
+<div id="materials-container">
+    {% for mother_material in mother_materials %}
+        <div class="card">
+            <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                {{ mother_material.describe }} : {{ mother_material.name }} -- موجودی : {{ mother_material.total_quantity }}
+            </a>
+            <div id="submaterials-{{ mother_material.id }}" class="submaterials" style="display: none;">
+                {% for field in mother_material.mother_material.all %}
+                    <div class="col">
+                        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <span style="font-size: smaller;">{{ field.describe }}</span> 
+                                    <span style="font-size: smaller;">{{ mother_material.describe }}</span> :
+                                    {{ field.name }}  -- موجودی : {{ field.total_quantity }} {{ field.unit }}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+
+{% endblock %}

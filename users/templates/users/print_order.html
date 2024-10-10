@@ -4,35 +4,155 @@
 {% load static %}
 
 <link href="{% static 'css/print_order.css' %}" rel="stylesheet">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sample Table</title>
+    <link href="{% static 'css/print_order.css' %}" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'B Nazanin';
+            src: url('{% static 'fonts/BNazanin.woff2' %}') format('woff2'),
+                 url('{% static 'fonts/BNazanin.woff' %}') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* Set RTL direction for the entire page */
+        body {
+            direction: rtl;
+            font-family: 'B Nazanin', sans-serif;
+        }
+
         /* General table styling */
         table {
             width: 100%;
             border-collapse: collapse;
+            font-family: 'B Nazanin', sans-serif; /* Apply font to the table */
         }
+
         th, td {
             border: 1px solid #000;
             padding: 8px;
             text-align: right;
         }
+
+        /* Specific styling for the 'درخواستی' column */
+        th:nth-child(4), /* 'درخواستی' header */
+        td:nth-child(4)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+        th:nth-child(2), /* 'درخواستی' header */
+        td:nth-child(2)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+
+        th:nth-child(12), /* 'درخواستی' header */
+        td:nth-child(12)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }  
+        th:nth-child(10), /* 'درخواستی' header */
+        td:nth-child(10)  /* 'درخواستی' data cells */ {
+            font-size: 1.2em; /* Increase font size */
+            font-weight: bold; /* Optional: make it bold */
+        }
+        /* Styling for the header container */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        .header-container h1 {
+            margin: 0;
+            flex: 1;
+        }
+
+        .export-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0;
+            cursor: pointer;
+            border-radius: 5px;
+            white-space: nowrap;
+        }
+
         /* Hide QR code by default */
         #qr-code {
             display: none;
         }
+
+        /* Responsive styling */
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd; /* Add border around each row */
+                border-radius: 8px; /* Round corners */
+                overflow: hidden;
+            }
+
+            td {
+                text-align: left; /* Align text to the left */
+                padding-left: 15px;
+                padding-right: 15px;
+                position: relative;
+                border: 1px solid #ddd; /* Maintain borders for mobile */
+                border-bottom: none;
+                display: none; /* Hide all cells initially */
+            }
+
+            /* Show only the first 4 cells */
+            tr td:nth-child(-n+4) {
+                display: block;
+            }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                right: 15px; /* Align labels to the right */
+                font-weight: bold;
+                white-space: nowrap;
+                text-align: right;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            td:last-child {
+                border-bottom: 1px solid #ddd; /* Add border to the last cell */
+            }
+        }
+
         /* Print-specific styling */
         @media print {
             table {
                 table-layout: auto; /* Ensure table adjusts based on content */
                 width: auto; /* Adjust width to content */
             }
+
             th, td {
                 white-space: nowrap; /* Prevent text wrapping */
             }
+
             #qr-code {
                 display: block;
                 position: fixed;
@@ -41,11 +161,18 @@
                 width: 100px; /* Adjust size as needed */
                 height: 100px; /* Adjust size as needed */
             }
+
+            .export-btn {
+                display: none; /* Hide the export button when printing */
+            }
         }
     </style>
 </head>
 <body>
-    <h1 class="text-center mb-4">فرم درخواست و حواله کالا</h1>
+    <div class="header-container">
+        <h1 class="text-center mb-4">فرم درخواست و حواله کالا</h1>
+        <button class="export-btn" onclick="exportTableToExcel('data-table', 'table-data')">Export to Excel</button>
+    </div>
     <div class="container">
         <table id="data-table">
             <thead>
@@ -56,7 +183,26 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- Initial rows are generated here by Django, but will be replaced by JavaScript -->
+                {% for material, data in materials.items %}
+                <tr>
+                    <td data-label="کد کالا">{{ data.code }}</td>
+                    <td data-label="نام کالا">{{ material }}</td>
+                    <td data-label="واحد">{{ data.unit }}</td>
+                    <td data-label="درخواستی">{{ data.value }}</td>
+                    <td data-label="ارسالی"></td>
+                    <td data-label="تحویلی"></td>
+                    <td data-label="خروج"></td>
+                    <td data-label="مانده"></td>
+                    <td data-label="کد کالا">{{ data.code }}</td>
+                    <td data-label="نام کالا">{{ material }}</td>
+                    <td data-label="واحد">{{ data.unit }}</td>
+                    <td data-label="درخواستی">{{ data.value }}</td>
+                    <td data-label="ارسالی"></td>
+                    <td data-label="تحویلی"></td>
+                    <td data-label="خروج"></td>
+                    <td data-label="مانده"></td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -67,55 +213,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
-        function fillTable() {
-            // Fetch the table body element
-            const tbody = document.getElementById('table-body');
-
-            // Example data to fill the table (you can fetch this dynamically from Django or an API)
-            const data = [
-                {% for material, value in materials.items %}
-                    ["{{ material }}", "{{ value }}"],
-                {% endfor %}
-            ];
-
-            // Clear existing rows
-            tbody.innerHTML = '';
-
-            // Calculate the number of rows needed
-            const numRows = Math.ceil(data.length / 2);
-
-            // Iterate through data and fill the table
-            for (let i = 0; i < numRows; i++) {
-                const tr = document.createElement('tr');
-
-                // Create cells for each row
-                for (let j = 0; j < 14; j++) {
-                    const td = document.createElement('td');
-
-                    // Determine the index in the data array based on column position
-                    let dataIndex;
-                    if (j === 0 || j === 1) {
-                        dataIndex = i * 2;
-                    } else if (j === 7 || j === 8) {
-                        dataIndex = i * 2 + 1;
-                    }
-
-                    // Fill the cell with material name or value
-                    if (dataIndex < data.length) {
-                        if (j === 0 || j === 7) {
-                            td.textContent = data[dataIndex][0]; // material name
-                        } else if (j === 1 || j === 8) {
-                            td.textContent = data[dataIndex][1]; // material value
-                        }
-                    }
-
-                    tr.appendChild(td);
-                }
-
-                tbody.appendChild(tr);
-            }
-        }
-
         function generateQRCode() {
             const qrCodeContainer = document.getElementById('qr-code');
             const url = window.location.href; // URL of the current page
@@ -126,9 +223,39 @@
             });
         }
 
-        // Call the fillTable function when the window finishes loading
+        function exportTableToExcel(tableID, filename = '') {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                // Triggering the function
+                downloadLink.click();
+            }
+        }
+
+        // Generate QR code when the page loads
         window.onload = function() {
-            fillTable();
             generateQRCode();
         };
 

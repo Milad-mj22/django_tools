@@ -16,7 +16,7 @@
 </script>
 
 <div class="container">
-    <h1>افزودن به انبار</h1>
+    
 
     <form method="post">
         {% csrf_token %}
@@ -24,12 +24,12 @@
         <div class="form-group row mt-4">
 
             <div class="form-group">
-                <label for="food_name" class="floating-label">نام غذا:</label>
+                <!-- <label for="food_name" class="floating-label">نام غذا:</label> -->
+            <!-- <label for="food_name" class="col-sm-2 col-form-label text-right "  style="direction: rtl">نام غذا  </label> -->
     
                 <input type="text" id="food_name" name="food_name" class="form-control" readonly value="{{food_name}}">
                 </div>
     
-            <label for="food_name" class="col-sm-2 col-form-label text-right "  style="direction: rtl">نام غذا  </label>
     
             </div>
         <div>

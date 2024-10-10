@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms.renderers import BaseRenderer
 from django.forms.utils import ErrorList
-from .models import Profile,Post_quill,jobs,SnappFoodList,cities
+from .models import Profile,Post_quill,jobs,SnappFoodList,cities,EntryExitLog
 from django import forms
 from .models import QuillPost , full_post , raw_material , mother_material
 from django import forms
@@ -66,12 +66,12 @@ class RegisterForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=100,
                                required=True,
-                               widget=forms.TextInput(attrs={'placeholder': 'Username',
+                               widget=forms.TextInput(attrs={'placeholder': 'نام کاربری',
                                                              'class': 'form-control',
                                                              }))
     password = forms.CharField(max_length=50,
                                required=True,
-                               widget=forms.PasswordInput(attrs={'placeholder': 'Password',
+                               widget=forms.PasswordInput(attrs={'placeholder': 'رمز عبور',
                                                                  'class': 'form-control',
                                                                  'data-toggle': 'password',
                                                                  'id': 'password',
@@ -255,3 +255,10 @@ class PostFormAddRestaurant(forms.ModelForm):
     
     
     
+
+from django import forms
+
+class EntryExitForm(forms.ModelForm):
+    class Meta:
+        model = EntryExitLog
+        fields = ['location']

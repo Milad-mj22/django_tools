@@ -1,0 +1,136 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروسه پنج مرحله‌ای</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: rtl;
+        }
+        /* چینش کلیدها به صورت راست به چپ */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            margin-top: 20px; /* اضافه کردن فاصله از هدر سایت */
+            direction: rtl;
+        }
+        .btn-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin-left: 5px; /* فاصله بین کلیدها و خطوط */
+        }
+        .btn-container button:hover {
+            background-color: #45a049;
+        }
+        /* خطوط باریک بین کلیدها */
+        .line {
+            width: 40px;
+            background-color: #000;
+            height: 2px;
+            align-self: center;
+            margin-left: 5px;
+        }
+        /* استایل برای بخش‌های محتوا */
+        .content-section {
+            display: none;
+            padding: 20px;
+            margin-top: 20px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+  
+        @media (max-width: 768px) {
+            .btn-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-container button {
+                max-width: 100%; /* کلیدها کل عرض صفحه را بگیرند */
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-bottom: 10px; /* فاصله بین کلیدها */
+            }
+            .line {
+                display: none; /* حذف خطوط بین کلیدها در حالت عمودی */
+            }
+            .content-section {
+                display: none;
+                padding: 20px;
+                margin-top: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+            }
+        }
+
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- کلیدها با خطوط باریک در بالای صفحه -->
+    <div class="btn-container">
+        <a href="/section1/{{order_id}}">
+            <button>مرحله ۱: درخواستی</button>
+        </a>
+        <div class="line"></div>
+        <a href="/section2/{{order_id}}">
+            <button>مرحله ۲: ارسالی از آماده سازی</button>
+        </a>
+        <div class="line"></div>
+        <a href="/section3/{{order_id}}">
+            <button>مرحله ۳: تحویلی رستوران</button>
+        </a>
+        <div class="line"></div>
+        <a href="/section4/{{order_id}}">
+            <button>مرحله ۴: مانده</button>
+        </a>
+        <div class="line"></div>
+        <a href="/section5/{{order_id}}">
+            <button>مرحله ۵: خروج</button>
+        </a>
+    </div>
+
+    {% block content2 %}
+    <!-- Content Goes here -->
+    {% endblock content2 %}
+    
+    
+    
+
+    <script>
+        function showSection(sectionId) {
+            // پنهان کردن همه‌ی بخش‌ها
+            var sections = document.querySelectorAll('.content-section');
+            sections.forEach(function(section) {
+                section.classList.remove('active');
+            });
+
+            // نمایش بخشی که انتخاب شده
+            var sectionToShow = document.getElementById(sectionId);
+            sectionToShow.classList.add('active');
+        }
+    </script>
+
+</body>
+{% endblock %}

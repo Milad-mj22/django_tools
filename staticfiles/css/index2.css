@@ -1,0 +1,235 @@
+.inside-openart-child {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  width: 1650px;
+  height: 900px;
+  opacity: 0.5;
+}
+.inside-open-art {
+  position: absolute;
+  top: 116.56px;
+  left: 300.66px;
+  font-size: 56px;
+  line-height: 64px;
+  color: #868eff;
+  text-align: center;
+}
+
+
+
+
+
+
+
+.inside-openart-child1,
+.inside-openart-child2,
+.inside-openart-child3,
+.inside-openart-inner,
+.inside-openart-item,
+.rectangle-div {
+  position: absolute;
+  top: 272.24px;
+  left: 30px;
+  border-radius: 15px;
+  background-color: var(--color-white);
+  width:250px;
+  height: 197.87px;
+  background-color: #e9e9e998;
+}
+.inside-openart-child1,
+.inside-openart-child2,
+.inside-openart-child3,
+.inside-openart-inner,
+.rectangle-div {
+  top: 503.77px;
+  height: 170px;
+}
+.inside-openart-child1,
+.inside-openart-child2,
+.inside-openart-child3,
+.rectangle-div {
+  top: 272.24px;
+  left: 300.16px;
+  height: 197.87px;
+}
+.inside-openart-child1,
+.inside-openart-child2,
+.inside-openart-child3 {
+  top: 503.77px;
+  height: 170px;
+}
+.inside-openart-child2,
+.inside-openart-child3 {
+  top: 272.24px;
+  left: 1092.16px;
+  height: 197.87px;
+}
+.inside-openart-child3 {
+  top: 503.77px;
+  height: 170px;
+}
+.prison-icon {
+  position: absolute;
+  top: 308.27px;
+  left: 106.16px;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+}
+.color-dropper-icon,
+.design-icon,
+.four-squares-icon,
+.text-color-icon,
+.toggle-on-icon {
+  position: absolute;
+  top: 308.27px;
+  left: 613.16px;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+}
+.design-icon,
+.four-squares-icon,
+.text-color-icon,
+.toggle-on-icon {
+  left: 1144.16px;
+}
+.design-icon,
+.four-squares-icon,
+.toggle-on-icon {
+  top: 529.28px;
+  left: 103.16px;
+}
+.design-icon,
+.four-squares-icon {
+  left: 617.16px;
+}
+.four-squares-icon {
+  top: 523.07px;
+  left: 1140.16px;
+  width: 42.43px;
+  height: 42.43px;
+}
+.documents,
+.spare,
+.spare-2,
+.spare-3 {
+  position: absolute;
+  top: 358.03px;
+  left: 104.16px;
+}
+.spare,
+.spare-2,
+.spare-3 {
+  top: 579.67px;
+}
+.spare-2,
+.spare-3 {
+  left: 613.81px;
+}
+.spare-3 {
+  left: 1143.85px;
+}
+.blur-computing,
+.lens-selector {
+  position: absolute;
+  top: 358.03px;
+  left:400.59px;
+}
+.blur-computing {
+  left: 1140.22px;
+}
+.openart-use-epilogue {
+  margin: 0;
+}
+.openart-use-epilogue-container {
+  position: absolute;
+  top: 392.55px;
+  left: 1140.22px;
+  font-size: var(--font-size-base);
+  line-height: 21px;
+  color: var(--color-dimgray);
+}
+.all-color-in-container,
+.all-component-art-container,
+.base-on-4pt-container,
+.create-any-design,
+.our-ui-kit-container {
+  position: absolute;
+  top: 392.55px;
+  left: 614.36px;
+  font-size: var(--font-size-base);
+  line-height: 21px;
+  color: var(--color-dimgray);
+}
+.all-component-art-container,
+.base-on-4pt-container,
+.create-any-design,
+.our-ui-kit-container {
+  left: 104.61px;
+}
+.all-component-art-container,
+.create-any-design,
+.our-ui-kit-container {
+  top: 614.55px;
+}
+.all-component-art-container,
+.create-any-design {
+  left: 615.51px;
+}
+.all-component-art-container {
+  left: 1145.97px;
+}
+.inside-openart {
+  position: relative;
+  background-color: var(--color-white);
+  width: 100%;
+  height: 900px;
+  overflow: hidden;
+  text-align: left;
+  font-size: var(--font-size-5xl);
+  color: var(--color-darkslategray);
+  font-family: var(--font-epilogue);
+}
+
+
+
+.btn-tool {
+  border-radius: 4px;
+  /* background-color: #f4511e; */
+  border: none;
+  color: #000000;
+  text-align: center;
+  /* font-size: 28px; */
+  padding: 10px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.btn-tool span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.btn-tool span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.btn-tool:hover span {
+  padding-right: 25px;
+}
+
+.btn-tool:hover span:after {
+  opacity: 1;
+  right: 0;
+}

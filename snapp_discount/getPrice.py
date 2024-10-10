@@ -37,6 +37,16 @@ class get_price():
         except:
             return False
     
+
+    def remove_false_key(self,obj):
+        """Recursively remove any key named 'false' from a JSON-like structure."""
+        if isinstance(obj, dict):
+            # Remove keys that are literally "false" (as a string)
+            return {k: self.remove_false_key(v) for k, v in obj.items() if k != "False"}
+        elif isinstance(obj, list):
+            return [self.remove_false_key(item) for item in obj]
+        return obj
+
     def ret_price(self):
 
         path = os.path.join('snapp_discount/cache/cities/{}/{}.json'.format(self.city,self.res_name))
@@ -44,7 +54,10 @@ class get_price():
         with open(path, 'r',encoding='utf-8') as f:
             data = json.load(f)
 
-        return data
+        cleaned_data = self.remove_false_key(data)
+
+
+        return cleaned_data
 
 
 

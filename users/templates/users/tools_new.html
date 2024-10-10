@@ -1,72 +1,25 @@
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title%}
+{% block title %} Home Page {% endblock title %}
 {% block content %}
+{% load static %}
 
-<style>
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        background-color: #ffffff;
-        padding: 10px;
-        align-items: center;
-    }
 
-    .grid-item {
-        background-color: rgba(125, 182, 247, 0.8);
-        border: 8px solid rgb(255, 255, 255);
-        border-radius: 15px;
-        padding: 10px;
-        font-size: 30px;
-        text-align: center;
-    }
+<link rel="stylesheet" type="text/css" href="{% static 'css/tools.css' %}">
 
-    .card-text {
-        font-size: 15px;
-        color: darkolivegreen;
-    }
 
-    /* Responsive adjustments */
-    @media (max-width: 1200px) {
-        .grid-container {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
 
-    @media (max-width: 768px) {
-        .grid-container {
-            grid-template-columns: 1fr;
-        }
 
-        .grid-item {
-            font-size: 25px;
-        }
-
-        .card-text {
-            font-size: 14px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .grid-item {
-            font-size: 20px;
-        }
-
-        .card-text {
-            font-size: 12px;
-        }
-    }
-</style>
 
 <div class="grid-container">
     {% for post in tools %}
-    <div class="grid-item">
-        <div class="card-body">
-            <h2 class="card-title">{{ post.title }}</h2>
-            <p class="card-text">{{ post.content|slice:":200" }}</p>
-            <a href="{{ post.slug }}" class="btn btn-primary">Read More &rarr;</a>
+    <a href="{{ post.slug }}" class="{% if post.title == 'Snapp' %}snapp-grid-item-link{% else %}grid-item-link{% endif %}">
+        <div class="{% if post.title == 'Snapp' %}snapp-grid-item{% else %}grid-item{% endif %}">
+            <div class="card-body">
+                <h2 class="card-title">{{ post.title }}</h2>
+                <p class="card-text">{{ post.content|slice:":200" }}</p>
+            </div>
         </div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 

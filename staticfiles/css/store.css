@@ -1,0 +1,139 @@
+
+
+h1 {
+    text-align: center;
+    color: #333;
+    direction: rtl; /* Set direction to RTL */
+    text-align: right; /* Align text to the right */
+}
+.card {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #e7e7e7;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    direction: rtl; /* Set direction to RTL */
+    text-align: right; /* Align text to the right */
+}
+.card a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.submaterials {
+    display: none;
+    margin-top: 10px;
+}
+
+.submaterial-card {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding-right: 30px;
+    padding-top: 5px;
+    margin-top: 5px;
+    background-color: #e9ecef;
+    /* margin-bottom: 5px; Add spacing between cards */
+}
+
+
+
+.card-body {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+
+
+
+.input-group {
+display: flex;
+align-items: center;
+}
+
+.input-group button {
+width: 1.5rem;
+padding: 0;
+line-height: 1.5;
+color: #fff;
+background-color: #ff8c00;
+border: 1px solid #fa7a00;
+cursor: pointer;
+}
+
+.input-group button:hover {
+background-color: #f07000;
+}
+
+.form-control {
+padding-right: 2.5rem;
+text-align: center;
+flex: 1;
+color: #000;
+background-color: #fff;
+}
+
+.input-group-append {
+margin-left: 0.5rem;
+}
+
+.card-body {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.input-wrapper {
+display: flex;
+align-items: center;
+width: 100%;
+}
+
+.digit-input {
+width: 6em;
+text-align: center;
+color: #000;
+background-color: #fff;
+padding: 0.5rem;
+}
+
+/* Add padding to the top of the content container */
+.content-container {
+padding-top: 2rem; /* Adjust this value to increase/decrease the space */
+}
+
+/* Style for additional details textarea */
+.additional-details {
+width: 100%;
+padding: 1rem;
+margin-top: 2rem;
+font-size: 1rem;
+border: 1px solid #ccc;
+border-radius: 0.25rem;
+resize: vertical;
+}
+
+.btn-block {
+display: block;
+width: 100%;
+}
+
+
+
+.floating-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    font-size: 16px;
+    color: #ccc;
+    transition: 0.2s ease all;
+  }
+  
+  .form-control:focus + .floating-label,
+  .form-control:valid + .floating-label {
+    top: -20px;
+    font-size: 14px;
+    color: #333;
+  }

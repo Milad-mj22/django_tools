@@ -1,0 +1,21 @@
+{
+    "name": "Seke Tala Restaurant",
+    "short_name": "ST",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "icons": [
+      {
+        "src": "icons/logo.svg",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "icons/logo.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  

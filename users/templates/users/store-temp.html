@@ -1,0 +1,158 @@
+{% extends "users/base.html" %}
+{% block title %}صفحه اصلی{% endblock title %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Logs</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Persian Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" />
+    
+    <!-- Persian Datepicker JS -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+</head>
+
+<script>
+    $(document).ready(function () {
+        // Toggle dropdown on button click
+        $("#dropdownButton").click(function () {
+            $("#dropdownContent").toggleClass("show");
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('#dropdownButton')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        };
+
+        // Update selected items display
+        $('input[name="raw_materials"]').change(function () {
+            let selectedMaterials = [];
+            $('input[name="raw_materials"]:checked').each(function () {
+                // Correctly get the label text
+                selectedMaterials.push($(this).parent().text().trim());
+            });
+            $('#selectedMaterials').text(selectedMaterials.join(', ') || 'None selected');
+        });
+
+        // Initialize Jalali datepicker for the date fields
+        $('input[name="date_from"], input[name="date_to"]').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true
+        });
+    });
+</script>
+
+<body>
+    <div class="container mt-4">
+        <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+            <h1 class="page-title">تاریخچه انبار</h1>
+        </div>
+    
+        <!-- Filter Form -->
+        <form method="GET" class="row g-3 mb-4">
+            <div class="col-md-2">
+                <select name="user" class="form-control">
+                    <option value="">انتخاب کاربر</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <select name="change_type" class="form-control">
+                    <option value="">افرودن / برداشتن</option>
+                    <option value="ADD">افرودن</option>
+                    <option value="REMOVE">برداشتن</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" id="date_from" name="date_from" class="form-control" placeholder="از تاریخ">
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" id="date_to" name="date_to" class="form-control" placeholder="تا تاریخ">
+            </div>
+
+            <div class="col-md-2 custom-dropdown">
+                <button type="button" id="dropdownButton" class="form-control">انتخاب ماده اولیه</button>
+                <div id="dropdownContent" class="dropdown-content">
+                    {% for material in raw_materials %}
+                    <label>
+                        <input type="checkbox" name="raw_materials" value="{{ material.id }}">
+                        {{ material.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <div class="mt-2">
+                    <strong>مواد انتخاب شده:</strong>
+                    <span id="selectedMaterials">انتخاب نشده است</span>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <select name="warehouse" class="form-control">
+                    <option value="">انتخاب انبار</option>
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+
+        <!-- Log Table -->
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>کابر</th>
+                    <th>عمل</th>
+                    <th>مقدار</th>
+                    <th>تاریخ</th>
+                    <th>ماده اولیه</th>
+                    <th>Warehouse</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.user.username }}</td>
+                    <td>{{ log.get_change_type_display }}</td>
+                    <td>{{ log.amount }}</td>
+                    <td>{{ log.jalali_date }}</td>
+                    <td>{{ log.inventory.inventory_raw_material.name }}</td>
+                    <td>{{ log.inventory.warehouse.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+{% endblock %}

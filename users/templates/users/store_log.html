@@ -1,0 +1,307 @@
+{% extends "users/base.html" %}
+{% block title %}صفحه اصلی{% endblock title %}
+{% block content %}
+{% load static %}
+
+<html lang="fa">
+
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Logs</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/persian.datepicker.css' %}">
+
+    
+    <script src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/persian.date.js' %}"></script>
+    <script src="{% static 'js/persian.datepicker.js' %}"></script>
+    
+
+</head>
+
+
+
+
+
+
+<!-- Script to Initialize Datepicker -->
+<script>
+
+    function convertPersianDigitsToEnglish(input) {
+                const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+                const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                
+                return input.replace(/[۰-۹]/g, function (char) {
+                    return englishDigits[persianDigits.indexOf(char)];
+                });
+            }
+
+
+    $(document).ready(function () {
+        // Initialize Persian Datepicker for both input fields
+        $('#date_from').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true
+        });
+        $('#date_to').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true
+        });
+    });
+
+$(document).ready(function () {
+    // Toggle dropdown on button click
+    $("#dropdownButton").click(function () {
+        $("#dropdownContent").toggleClass("show");
+    });
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('#dropdownButton')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    };
+
+    // Handle Select All checkbox
+    $('#selectAll').change(function () {
+        var checked = this.checked;
+        $('input[name="raw_materials"]').each(function () {
+            $(this).prop('checked', checked);
+        });
+        updateSelectedMaterials();  // Update the selected materials text
+    });
+
+    // Update selected items display
+    $('input[name="raw_materials"]').change(function () {
+        updateSelectedMaterials();
+        updateSelectAllStatus();  // Check if all checkboxes are selected or not
+    });
+
+    // Function to update the selected materials text
+    function updateSelectedMaterials() {
+        if ($('#selectAll').prop('checked')) {
+            // If Select All is checked, display "انتخاب همه"
+            $('#selectedMaterials').text('انتخاب همه');
+        } else {
+            let selectedMaterials = [];
+            $('input[name="raw_materials"]:checked').each(function () {
+                selectedMaterials.push($(this).parent().text().trim());
+            });
+            $('#selectedMaterials').text(selectedMaterials.join(', ') || 'انتخاب نشده است');
+        }
+    }
+
+    // Function to check if all checkboxes are selected and update Select All checkbox
+    function updateSelectAllStatus() {
+        var totalCheckboxes = $('input[name="raw_materials"]').length;
+        var checkedCheckboxes = $('input[name="raw_materials"]:checked').length;
+        $('#selectAll').prop('checked', totalCheckboxes === checkedCheckboxes);
+        updateSelectAllLabel(totalCheckboxes === checkedCheckboxes);
+    }
+
+    // Function to update the label of the Select All checkbox
+    function updateSelectAllLabel(isAllSelected) {
+        if (isAllSelected) {
+            $('#selectAllLabel').text('لغو انتخاب همه');  // Deselect All
+        } else {
+            $('#selectAllLabel').text('انتخاب همه');  // Select All
+        }
+    }
+});
+
+
+$(document).ready(function () {
+        var defaultDateFrom = '{{ default_date_from }}'; // تاریخ از سمت سرور
+        var defaultDateTo = '{{ default_date_to }}';     // تاریخ از سمت سرور
+
+        // Initialize Persian Datepicker for both input fields with default values
+        $('#date_from').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            initialValue: !!defaultDateFrom,  
+            selectedBefore: !!defaultDateFrom,
+            initialValueType: 'persian'
+            // altField: defaultDateFrom ? convertPersianDigitsToEnglish(defaultDateFrom) : '' // غیرفعال موقت
+        });
+
+        $('#date_to').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            initialValue: !!defaultDateTo,
+            selectedBefore: !!defaultDateTo,
+            initialValueType: 'persian'
+            // altField: defaultDateTo ? convertPersianDigitsToEnglish(defaultDateTo) : ''  // غیرفعال موقت
+        });
+    });
+
+
+    document.getElementById('userDropdown').addEventListener('change', function (e) {
+        var dropdown = e.target;
+        var selectAll = dropdown.options[1];  // The 'Select All' option
+
+        // Check if 'Select All' was selected
+        if (selectAll.selected) {
+            // Select all users
+            for (var i = 2; i < dropdown.options.length; i++) {
+                dropdown.options[i].selected = true;  // Select all user options
+            }
+        } else {
+            // Deselect 'Select All' if any other option is selected
+            var allSelected = true;
+            for (var i = 2; i < dropdown.options.length; i++) {
+                if (!dropdown.options[i].selected) {
+                    allSelected = false;
+                    break;
+                }
+            }
+            selectAll.selected = allSelected;  // If all users are selected, keep 'Select All' selected
+        }
+    });
+
+
+
+    document.getElementById('warehouseDropdown').addEventListener('change', function (e) {
+        var dropdown = e.target;
+        var selectAll = dropdown.options[1];  // The 'Select All' option
+
+        // Check if 'Select All' was selected
+        if (selectAll.selected) {
+            // Select all warehouses
+            for (var i = 2; i < dropdown.options.length; i++) {
+                dropdown.options[i].selected = true;  // Select all warehouse options
+            }
+        } else {
+            // Deselect 'Select All' if any other option is selected
+            var allSelected = true;
+            for (var i = 2; i < dropdown.options.length; i++) {
+                if (!dropdown.options[i].selected) {
+                    allSelected = false;
+                    break;
+                }
+            }
+            selectAll.selected = allSelected;  // If all warehouses are selected, keep 'Select All' selected
+        }
+    });
+
+</script>
+
+
+
+
+
+<body>
+    <div class="container mt-4">
+        <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+            <h1 class="page-title">تاریخچه انبار</h1>
+        </div>
+    
+        <!-- Filter Form -->
+        <form method="GET" class="row g-3 mb-4">
+            <div class="col-md-2">
+                <select name="user" id="userDropdown" class="form-control">
+                    <option value="">انتخاب کاربر</option>
+                    <option value="select_all">انتخاب همه کاربران</option> <!-- Add Select All Option -->
+                    {% for user in users %}
+                    <option value="{{ user.user.id }}" {% if user.user.id == default_user %}selected{% endif %}>
+                        {{ user.user.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="change_type" class="form-control">
+                    <option value="">افرودن / برداشتن</option>
+                    <option value="ADD" {% if default_change_type == "ADD" %}selected{% endif %}>افرودن</option>
+                    <option value="REMOVE" {% if default_change_type == "REMOVE" %}selected{% endif %}>برداشتن</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" id="date_from" name="date_from" class="form-control" placeholder="از تاریخ" value="{{ default_date_from }}">
+            </div>
+            
+            <div class="col-md-2">
+                <input type="text" id="date_to" name="date_to" class="form-control" placeholder="تا تاریخ" value="{{ default_date_to }}">
+            </div>
+
+            <div class="col-md-2 custom-dropdown">
+                <button type="button" id="dropdownButton" class="form-control">انتخاب ماده اولیه</button>
+                <div id="dropdownContent" class="dropdown-content">
+
+                    <label>
+                        <input type="checkbox" id="selectAll">
+                        انتخاب همه
+                    </label>
+
+
+                    {% for material in raw_materials %}
+                    <label>
+                        <input type="checkbox" name="raw_materials" value="{{ material.id }}">
+                        {{ material.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <div class="mt-2">
+                    <strong>مواد انتخاب شده:</strong>
+                    <span id="selectedMaterials">انتخاب نشده است</span>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <select name="warehouse" id="warehouseDropdown" class="form-control">
+                    <option value="">انتخاب انبار</option>
+                    <option value="select_all">انتخاب همه انبارها</option> <!-- Add Select All Option -->
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+
+        <!-- Log Table -->
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">کاربر</th>
+                    <th class="text-center">عمل</th>
+                    <th class="text-center">مقدار</th>
+                    <th class="text-center">تاریخ</th>
+                    <th class="text-center">ماده اولیه</th>
+                    <th class="text-center">انبار</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="text-center">{{ log.user.user.username }}</td>
+                    <td class="text-center">{{ log.get_change_type_display }}</td>
+                    <td class="text-center">{{ log.amount }}</td>
+                    <td class="text-center">{{ log.jalali_date }}</td>
+                    <td class="text-center">{{ log.inventory.inventory_raw_material.name }}</td>
+                    <td class="text-center">{{ log.inventory.warehouse.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+{% endblock %}

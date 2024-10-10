@@ -1,106 +1,268 @@
 {% extends "users/base.html" %}
-{% block title %} Home Page {% endblock title%}
-{% block content %}
-{% include 'users/side_panel_profile.html' %}
 {% load static %}
-<link href="{% static 'css\profile_page.css' %}" rel="stylesheet">
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
 
-  
-    <!-- <link rel="stylesheet" href="style.css"> -->
+{% block content %}
 
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"> -->
-</head>
+<style>
+.col-sm-ealign {
+  text-align: right;
+}
+
+.col-sm-9-center {
+  text-align: center;
+}
+</style>
+<!-- Persian Datepicker CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/persian.datepicker.css' %}">
+
+
+<!-- jQuery (required by Persian Datepicker) -->
+<script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+
+<!-- Persian Datepicker JS -->
+<script src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+<script src="{% static 'js/persian.date.js' %}"></script>
+<script src="{% static 'js/persian.datepicker.js' %}"></script>
+
+
+<html lang="fa" dir="rtl"></html>
 <body>
-    <!-- Main -->
-    <div class="main">
-        <h2>User Account</h2>
-        <div class="card">
-            <div class="card-body">
-                <i class="fa fa-pen fa-xs edit"></i>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>Name</td>
-                            <td>:</td>
-                            <td>{{user.first_name}}  {{ user.last_name}}</td>
-                        </tr>
-                        <tr>
-                            <td>Email</td>
-                            <td>:</td>
-                            <td>{{user.email }}</td>
-                        </tr>
-                        <tr>
-                            <td>Address</td>
-                            <td>:</td>
-                            <td>{{user.address}}</td>
-                        </tr>
-                        <tr>
-                            <td>Job</td>
-                            <td>:</td>
-                            <td>{{user.profile.job_position}}</td>
-                        </tr>
-                        <tr>
-                            <td>Skill</td>
-                            <td>:</td>
-                            <td>{{user.skill}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <section style="background-color: #eee; margin-top: 20px;">
+    <div class="container py-5">
+      
+      <!-- Breadcrumb -->
+      <div class="row">
+        <div class="col">
+          <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+            <ol class="breadcrumb mb-0">
+
+              <li class="breadcrumb-item active" aria-current="page">صفحه کاربر</li>
+            </ol>
+          </nav>
         </div>
+      </div>
+      
+      <div class="row">
+        
+        <!-- Profile Sidebar -->
+        <div class="col-lg-4 ">
+          <div class="card mb-4" style="border-radius:30px">
+            <div class="card-body text-center">
+              <img src="{{ user.avatar.url }}" alt="avatar" class="rounded-rectangle img-fluid" style="border-radius: 20px; max-width: 800; max-height :800px;">
+              <p class="text-muted mb-1">نام کاربری</p>
+              
+              <h5 class="my-3">{{ user.user.username }}</h5>
+              <!-- <p class="text-muted mb-1">{{ user.user.username }}</p> -->
+              <!-- <p class="text-muted mb-4">{{ user.job_short_name }}</p> -->
+              <div class="d-flex justify-content-center mb-2">
 
-        <!-- <h2>SOCIAL MEDIA</h2>
-        <div class="card">
-            <div class="card-body">
-                <i class="fa fa-pen fa-xs edit"></i>
-                <div class="social-media">
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-invision fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-whatsapp fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <span class="fa-stack fa-sm">
-                        <i class="fas fa-circle fa-stack-2x"></i>
-                        <i class="fab fa-snapchat fa-stack-1x fa-inverse"></i>
-                    </span>
-                </div>
+              </div>
             </div>
-        </div> -->
+          </div>
+          
+          <!-- Social Links -->
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body p-0">
+              <ul class="list-group list-group-flush rounded-3">
+                {% if user.website %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fas fa-globe fa-lg text-warning"></i>
+                  <a href="{{ user.website }}" target="_blank" class="mb-0">{{ user.website }}</a>
+                </li>
+                {% endif %}
+                {% if user.github %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-github fa-lg" style="color: #333333;"></i>
+                  <a href="{{ user.github }}" target="_blank" class="mb-0">{{ user.github_username }}</a>
+                </li>
+                {% endif %}
+                {% if user.twitter %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
+                  <a href="{{ user.twitter }}" target="_blank" class="mb-0">{{ user.twitter_handle }}</a>
+                </li>
+                {% endif %}
+                {% if user.instagram %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
+                  <a href="{{ user.instagram }}" target="_blank" class="mb-0">{{ user.instagram_username }}</a>
+                </li>
+                {% endif %}
+                {% if user.facebook %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
+                  <a href="{{ user.facebook }}" target="_blank" class="mb-0">{{ user.facebook_username }}</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Profile Main Content -->
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header bg-primary text-white  col-sm-9-center">
+              <h5 class="mb-0">اطلاعات فردی</h5>
+            </div>
+            <div class="card-body">
+
+              <!-- Full Name -->
+              <div class="row">
+                <div class="col-sm-3 col-sm-ealign">
+                  <p class="mb-0">نام و نام خانوادگی : </p>
+                </div>
+                <div class="col-sm-9 col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.first_name }} {{ user.last_name }}</p>
+                </div>
+              </div>
+              <hr>
+              
+              <!-- Email -->
+              <div class="row">
+                <div class="col-sm-3 col-sm-ealign">
+                  <p class="mb-0">سمت : </p>
+                </div>
+                <div class="col-sm-9 col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.job_position.persian_name }}</p>
+                </div>
+              </div>
+              <hr>
+              
+              <!-- Phone -->
+              <div class="row">
+                <div class="col-sm-3 col-sm-ealign">
+                  <p class="mb-0">شماره تلفن : </p>
+                </div>
+                <div class="col-sm-9 col-sm-9-center">
+                  <p class="text-muted mb-0">&lrm;{{ user.phone }}</p>
+                </div>
+              </div>
+              <hr>
+              
+              <!-- Address -->
+              <div class="row">
+                <div class="col-sm-3 col-sm-ealign">
+                  <p class="mb-0">آدرس محل سکونت : </p>
+                </div>
+                <div class="col-sm-9 col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.address }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Project Status -->
+          <!-- <div class="row">
+            <div class="col-md-6"> -->
+
+
+
+
+
+
+
+
+
+          <div class="card mb-4 mb-md-0">
+            <div class="card-header bg-primary text-white  col-sm-9-center">
+              <h5 class="mb-0">عملکرد ماه گذشته</h5>
+            </div>
+            <div class="card-body">
+              <!-- Performance Summary -->
+              <div class="row mb-3">
+                <div class="col-sm-6 col-sm-ealign">
+                  <p class="mb-0">عملکرد ماه گذشته:</p>
+                </div>
+                <div class="col-sm-6 text-right  col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.last_month_performance }}%</p>
+                </div>
+              </div>
+              <hr>
+          
+              <!-- Leave Info -->
+              <div class="row mb-3">
+                <div class="col-sm-6 col-sm-ealign">
+                  <p class="mb-0">روزهای مرخصی استفاده‌شده:</p>
+                </div>
+                <div class="col-sm-6 text-right col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.used_leave_days }} روز</p>
+                </div>
+              </div>
+
+           
+              <hr>
+
+              <div class="row mb-3">
+                <div class="col-sm-6  col-sm-ealign">
+                  <p class="mb-0">روزهای مرخصی مجاز:</p>
+                </div>
+                <div class="col-sm-6 text-right col-sm-9-center">
+                  <p class="text-muted mb-0">{{ user.allowed_leave_days }} روز</p>
+                </div>
+              </div>
+              <hr>
+          
+              <!-- New Leave Request Button -->
+              <div class="text-center">
+                <input type="text" id="leave-date" class="form-control mb-3" placeholder="انتخاب تاریخ مرخصی">
+                <button type="button" id="open-calendar" class="btn btn-success btn-block">ثبت مرخصی جدید</button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+            
+            <!-- Skills -->
+            <div class="col-md-6">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body">
+                  <p class="mb-4"><span class="text-primary font-italic me-1">Skills</span> Proficiency Level</p>
+                  
+                  {% for skill in user.skills %}
+                  <p class="mb-1" style="font-size: .77rem;">{{ skill.name }}</p>
+                  <div class="progress rounded mb-3" style="height: 5px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ skill.level }}%" aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  {% endfor %}
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
     </div>
-    <!-- End -->
+  </section>
+
 </body>
+
 </html>
+{% endblock %}
 
-{%endblock%}
+<script>
+  $(document).ready(function() {
+    // Initialize Persian Datepicker
+    $("#leave-date").pDatepicker({
+      format: 'YYYY/MM/DD',
+      autoClose: true,
+      calendar: {
+        persian: {
+          locale: 'fa'
+        }
+      }
+    });
 
-
-
-
-
-
+    // Open date picker on button click
+    $("#open-calendar").on("click", function() {
+      $("#leave-date").focus(); // Triggers the calendar to open
+    });
+  });

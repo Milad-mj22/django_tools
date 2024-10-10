@@ -1,117 +1,158 @@
 {% extends "users/base.html" %}
 {% block title %} Home Page {% endblock title %}
 {% block content %}
+
 {% load static %}
-<link href="{% static 'css/profile_page.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script> <!-- Font Awesome for icons -->
+<html lang="fa" dir="rtl"></html>
+<script>
+    function toggleSubmaterials(id) {
+        var submaterials = document.getElementById(id);
+        if (submaterials.style.display === "none" || submaterials.style.display === "") {
+            submaterials.style.display = "block";
+        } else {
+            submaterials.style.display = "none";
+        }
+    }
 
-<style>
-  .input-group {
-    display: flex;
-    align-items: center;
-  }
+    function filterMaterials() {
+        const input = document.getElementById('search-bar');
+        const filter = input.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        let hasVisibleItem = false;
 
-  .input-group button {
-    width: 1.5rem;
-    padding: 0;
-    line-height: 1.5;
-    color: #fff;
-    background-color: #ff8c00;
-    border: 1px solid #fa7a00;
-    cursor: pointer;
-  }
+        cards.forEach(card => {
+            const cardText = card.innerText.toLowerCase();
+            const submaterials = card.querySelector('.submaterials');
 
-  .input-group button:hover {
-    background-color: #f07000;
-  }
+            if (cardText.includes(filter)) {
+                card.style.display = "";  // Show the card
+                hasVisibleItem = true;
 
-  .form-control {
-    padding-right: 2.5rem;
-    text-align: center;
-    flex: 1;
-    color: #000;
-    background-color: #fff;
-  }
+                if (submaterials) {
+                    submaterials.style.display = "block";  // Show submaterials
+                    const subCards = submaterials.querySelectorAll('.submaterials .card');
 
-  .input-group-append {
-    margin-left: 0.5rem;
-  }
+                    subCards.forEach(subCard => {
+                        const subCardText = subCard.innerText.toLowerCase();
+                        if (subCardText.includes(filter)) {
+                            subCard.style.display = "";  // Show subCard if it matches
+                        } else {
+                            subCard.style.display = "none";  // Hide subCard if it doesn't match
+                        }
+                    });
+                }
+            } else {
+                card.style.display = "none";  // Hide the card
+                if (submaterials) {
+                    submaterials.style.display = "none";  // Hide submaterials
+                    
+                }
+            }
+        });
 
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+        // Scroll to the first match
+        // if (hasVisibleItem) {
+        //     const firstMatch = document.querySelector('.card:not([style*="display: none"])');
+        //     if (firstMatch) {
+        //         firstMatch.scrollIntoView({ behavior: 'smooth' });
+        //     }
+        // }
+    }
 
-  .input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
+    function handleSearchInput() {
+        const input = document.getElementById('search-bar');
+        const value = input.value.trim();
+        
+        // Close all submaterials when search bar is cleared
+        if (value === "") {
+            const allSubmaterials = document.querySelectorAll('.submaterials');
+            allSubmaterials.forEach(submaterials => {
+                submaterials.style.display = "none";
+            });
 
-  .digit-input {
-    width: 6em;
-    text-align: center;
-    color: #000;
-    background-color: #fff;
-    padding: 0.5rem;
-  }
+            // Show all cards when search bar is cleared
+            const allCards = document.querySelectorAll('.card');
+            allCards.forEach(card => {
+                card.style.display = "";  // Show all cards
+            });
+        }
 
-  /* Add padding to the top of the content container */
-  .content-container {
-    padding-top: 2rem; /* Adjust this value to increase/decrease the space */
-  }
+        // Apply filter regardless of whether search bar is cleared or not
+        filterMaterials();
+    }
 
-  /* Style for additional details textarea */
-  .additional-details {
-    width: 100%;
-    padding: 1rem;
-    margin-top: 2rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-    resize: vertical;
-  }
+    function closeAllTabs() {
+        const allSubmaterials = document.querySelectorAll('.submaterials');
+        allSubmaterials.forEach(submaterials => {
+            submaterials.style.display = "none";
+        });
+    }
+</script>
 
-  .btn-block {
-    display: block;
-    width: 100%;
-  }
-</style>
+<div class="container">
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">ایجاد سفارش</h1>
+    </div>
+    <!-- Search Bar with Close All Tabs Button -->
+    <div class="mb-4 d-flex align-items-center">
+        <input type="text" id="search-bar" oninput="handleSearchInput()" class="form-control" placeholder="جستجو بر اساس نام یا توضیحات...">
+        <button type="button" onclick="closeAllTabs()" class="btn btn-light ms-2" style="margin-right: 5px;">
+            <i class="fa-solid fa-refresh"></i> <!-- Refresh -->
 
-<div class="container content-container">
-  <form method="post">
-    {% csrf_token %}
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-      {% for field in materials %}
-      <div class="col">
-        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
-          <div class="card-body">
-            <h5 class="card-title">{{ field.name }}</h5>
-            <div class="input-wrapper">
-              <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
-              <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
-              <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
-              <div class="input-group-append">
-                <span class="input-group-text">{{ field.unit }}</span>
-              </div>
-            </div>
-          </div>
+        </button>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div>
+            {% for mother_material in mother_materials %}
+                <div class="card">
+                    <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                        {{ mother_material.describe }} : {{ mother_material.name }}
+                    </a>
+                    <div id="submaterials-{{ mother_material.id }}" class="submaterials" style="display: none;">
+                        {% for field in mother_material.mother_material.all %}
+                            <div class="col">
+                                <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <span style="font-size: smaller;">{{ field.describe }}</span> 
+                                            <span style="font-size: smaller;">{{ mother_material.describe }}</span> :
+                                            {{ field.name }}
+                                        </h5>
+
+                                        <div class="input-wrapper">
+                                            <button type="button" class="btn btn-decrement" onclick="changeValue('{{ field.id }}_input', -1)">-</button>
+                                            <input class="form-control digit-input" type="text" step="1" id="{{ field.id }}_input" name="{{ field.name }}" value="0">
+                                            <button type="button" class="btn btn-increment" onclick="changeValue('{{ field.id }}_input', 1)">+</button>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">{{ field.unit }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-      </div>
-      {% endfor %}
-    </div>
 
-    <!-- Additional details field -->
-    <div class="mt-4">
-      <label for="additional_details" class="form-label">Additional Details</label>
-      <textarea id="additional_details" name="additional_details" class="additional-details" rows="4" placeholder="Enter any additional details here..."></textarea>
-    </div>
+        <!-- Additional details field -->
+        <div class="mt-4" style="text-align: right;">
+            <label for="additional_details" class="form-label" style="direction: rtl; text-align: right;">توضیحات اضافه در صورت نیاز</label>
+            <textarea id="additional_details" name="additional_details" class="additional-details form-control" rows="4" placeholder="متن را وارد کنید ..."></textarea>
+        </div>
 
-    <div class="text-center mt-4">
-      <button type="submit" class="btn btn-primary btn-block">Submit</button>
-    </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-block">ارسال</button>
+        </div>
 
-  </form>
+
+    </form>
 </div>
 
 <script>

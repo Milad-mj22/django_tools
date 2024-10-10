@@ -1,0 +1,317 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/store.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<html lang="fa" dir="rtl"></html>
+
+<script>
+
+
+    const backendEndpoint = "{{ backend_endpoint }}";  // Inject the backend endpoint from Django
+
+    // Toggle the form
+    function toggleForm() {
+        const form = document.getElementById('warehouse-form');
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    
+
+//     // Submit form via AJAX
+function submitForm() {
+    const warehouseSelect = document.getElementById('warehouse');
+    const warehouseName = warehouseSelect.options[warehouseSelect.selectedIndex].text;
+
+    // Prepare data to send to the server
+    const data = {
+        warehouse: warehouseName,
+        csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token
+    };
+
+    console.log('Sending data to backend:', data); // Debug: log the data
+
+    // AJAX request
+    $.ajax({
+        type: 'POST',
+        url: '/profile/store_take/',
+        data: data,
+        success: function(response) {
+            const materialsContainer = document.getElementById('materials-container');
+            materialsContainer.innerHTML = ''; // Clear existing materials
+
+            // Debugging the response
+            console.log('Received materials data:', response);
+
+            // Iterate over each mother material and build the HTML
+            response.mother_materials.forEach(material => {
+                const submaterialsHTML = material.submaterials.map(sub => `
+                    <div class="col">
+                        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <span style="font-size: smaller;">${sub.describe}</span> :
+                                    ${sub.name}  -- موجودی : ${sub.total_quantity} ${sub.unit}
+                                </h5>
+
+                                <!-- Input wrapper with increment/decrement buttons -->
+                                <div class="input-wrapper">
+                                    <button type="button" class="btn btn-decrement" data-field-id="${sub.id}" onclick="changeValue(this, -1, ${sub.total_quantity})">-</button>
+                                    <input class="form-control digit-input" type="number" step="1" id="input-${sub.id}" name="quantity-${sub.id}" value="0" min="0" max="${sub.total_quantity}">
+                                    <button type="button" class="btn btn-increment" data-field-id="${sub.id}" onclick="changeValue(this, 1, ${sub.total_quantity})">+</button>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">${sub.unit}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');  // Use join() to properly concatenate the HTML string
+
+                // Append the submaterials HTML to the materials container
+                materialsContainer.innerHTML += `
+                    <div class="card">
+                        <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-${material.id}')">
+                            ${material.describe} : ${material.name} -- موجودی : ${material.total_quantity}
+                        </a>
+                        <div id="submaterials-${material.id}" class="submaterials" style="display: none;">
+                            ${submaterialsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Add submit button for selected materials
+            materialsContainer.innerHTML += `
+                <div class="submit-wrapper mt-3">
+                    <button type="button" class="btn btn-primary" onclick="submitAllItems()">ثبت</button>
+                </div>
+            `;
+        },
+        error: function(xhr, status, error) {
+            console.error('Error in response:', xhr.responseText);
+            $('#response-data').html(`<p style="color: red;">Error: ${xhr.responseText}</p>`);
+        }
+    });
+}
+
+
+
+function toggleSubmaterials(id) {
+        var submaterials = document.getElementById(id);
+        if (submaterials.style.display === "none" || submaterials.style.display === "") {
+            submaterials.style.display = "block";
+        } else {
+            submaterials.style.display = "none";
+        }
+    }
+
+
+
+
+
+
+    // Change value function for increment/decrement buttons
+    function changeValue(button, increment, maxQuantity) {
+    const fieldId = button.getAttribute('data-field-id');  // Get the field ID from the button's data attribute
+    const input = document.getElementById(`input-${fieldId}`);  // Find the input using the correct ID format
+
+    if (!input) {
+        console.error(`Input field with ID "input-${fieldId}" not found.`);
+        return;
+    }
+
+    let value = parseInt(input.value);
+
+    if (isNaN(value)) {
+        console.error(`Input field value is not a number: ${input.value}`);
+        value = 0;  // Default to 0 if input is invalid
+    }
+
+    // Update the value by increment/decrement
+    value += increment;
+
+    // Ensure the value stays within the range (between 0 and maxQuantity)
+    if (value < 0) {
+        value = 0;
+    } else if (value > maxQuantity) {
+        value = maxQuantity;
+    }
+
+    // Update the input field's value visually
+    input.value = value;
+
+    console.log(`Updated field with ID "input-${fieldId}" to value: ${value}`);
+}
+
+
+function submitAllItems() {
+    // Collect all input values for quantities
+    const inputs = document.querySelectorAll('input[name^="quantity-"]');  // Select all inputs with name starting with "quantity-"
+    const selectedItems = {};
+
+    
+    console.log('Sending data to backend:', inputs); // Debug: log the data
+
+
+    inputs.forEach(input => {
+        const quantity = parseInt(input.value);
+        const itemName = input.getAttribute('data-name');  // Get the item name from the data-name attribute
+
+        if (quantity > 0) {  // Only collect items with a quantity greater than 0
+            selectedItems[input.name] = quantity;  // Use the item name as the key instead of ID
+        }
+    });
+
+
+    if (Object.keys(selectedItems).length === 0) {  // Check if any items are selected
+        alert('حداقل یک مورد باید انتخاب شود');
+        return;  // Stop function execution if no items are selected
+    }
+
+
+    // Get the selected warehouse name (assuming it's in a dropdown or hidden input)
+    const warehouseName = document.querySelector('#warehouse').value;  // Adjust the selector to match your element
+
+    if (!warehouseName) {  // Ensure the warehouse name is selected
+        alert('Please select a warehouse.');
+        return;
+    }
+
+
+    // Send the selected items via AJAX
+    $.ajax({
+        type: 'POST',
+        url: '/profile/store_take_confirm/',  // Update this to the correct endpoint
+        data: {
+            items: JSON.stringify(selectedItems),  // Convert selected items to a JSON string
+            warehouse: warehouseName, 
+            csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value  // Include the CSRF token
+        },
+        success: function(response) {
+
+            if (response.status === true) {
+            alert(response.message); // Show success message
+            setTimeout(() => {
+            // alert(response.message); // Show the alert
+            location.reload(); // Refresh the page
+        }, 100); // Adjust the timeout if needed
+            } 
+            else {
+                alert(`Error: ${response.message}`); // Show error message
+            }
+
+
+            inputs.forEach(input => input.value = '0');
+        },
+        error: function(xhr, status, error) {
+            alert(`Error: ${xhr.responseText}`);
+        }
+
+
+
+
+
+        
+    });
+}
+
+
+
+</script>
+
+
+
+
+
+<div class="container">
+    <div class="card page-title-card shadow-lg rounded-lg p-4 mb-4">
+        <h1 class="page-title">برداشت از انبار</h1>
+    </div>
+
+
+   <!-- Warehouse Selection and Filters -->
+   <form id="warehouse-form" method="post" style="display: block;"> <!-- Form initially hidden -->
+    {% csrf_token %}
+
+    <div class="card warehouse-selection-card shadow-sm rounded p-3 mb-3">
+        <!-- Select All Checkbox -->
+       
+
+
+
+
+
+        <!-- Warehouse Dropdown -->
+        <div class="mb-4 d-flex align-items-center" style="width: 100%;">
+            <label for="warehouse" class="form-label" style="flex: 0 0 150px; font-weight: bold; direction: rtl;">
+                انتخاب انبار
+            </label>
+            <select id="warehouse" name="warehouse" class="form-select shadow-sm" style="flex: 1; direction: rtl; text-align: right;" onchange="enableSubmitButton()">
+                <option value="" disabled selected>انتخاب انبار...</option>
+                {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+
+
+
+        <!-- Submit Button -->
+        <div class="text-end">
+            <button type="button" class="btn btn-primary btn-sm" onclick="submitForm()">ثبت انبار</button>
+
+        </div>
+    </form>
+
+</div>
+
+
+<!-- Materials -->
+<div id="materials-container">
+    {% for mother_material in mother_materials %}
+        <div class="card">
+            <a href="javascript:void(0);" onclick="toggleSubmaterials('submaterials-{{ mother_material.id }}')">
+                {{ mother_material.describe }} : {{ mother_material.name }} -- موجودی : {{ mother_material.total_quantity }}
+            </a>
+            <div id="submaterials-{{ mother_material.id }}" class="submaterials" style="display: none;">
+                {% for field in mother_material.mother_material.all %}
+                    <div class="col">
+                        <div class="card shadow-lg border-10 rounded-lg mt-0 mb-0">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <span style="font-size: smaller;">{{ field.describe }}</span> 
+                                    <span style="font-size: smaller;">{{ mother_material.describe }}</span> :
+                                    {{ field.name }}  -- موجودی : {{ field.total_quantity }} {{ field.unit }}
+                                </h5>
+
+                                <div class="input-wrapper">
+                                    <!-- Correcting the data-field-id attribute by using the field.id -->
+                                    <input class="form-control digit-input" type="number" step="1" id="input-{{ field.id }}" name="quantity-{{ field.id }}" value="0" min="0" max="{{ field.total_quantity }}">
+                                    <button type="button" class="btn btn-increment" data-field-id="{{ field.id }}" onclick="changeValue(this, 1, {{ field.total_quantity }})">+</button>
+                                    <button type="button" class="btn btn-decrement" data-field-id="{{ field.id }}" onclick="changeValue(this, -1, {{ field.total_quantity }})">-</button>
+                                    
+                                    
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">{{ field.unit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}

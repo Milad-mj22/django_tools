@@ -1,0 +1,184 @@
+@font-face {
+    font-family: 'B Zar';
+    src: url('/fonts/BZar.woff2') format('woff2'),
+         url('/fonts/BZar.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'B Nazanin';
+    src: url('/fonts/BNazanin.woff2') format('woff2'),
+         url('/fonts/BNazanin.woff') format('woff');
+}
+
+.persian-text {
+    font-family: 'B Nazanin', serif;
+}
+
+.navbar-toggler {
+    border: none;
+    padding: 0;
+    outline: none;
+    background-color: transparent;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    display: inline-block;
+    position: relative;
+    width: 30px;
+    height: 2px;
+    background-color: black;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Remove the phone icon */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 2px;
+    background-color: black;
+    position: absolute;
+    left: 0;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    list-style: none; /* Remove bullet points */
+    padding-left: 0;  /* Remove padding */
+}
+
+.navbar-toggler-icon::before {
+    top: -8px;
+}
+
+.navbar-toggler-icon::after {
+    top: 8px;
+}
+
+.navbar-toggler.collapsed .navbar-toggler-icon {
+    transform: rotate(90deg);
+}
+
+.navbar-toggler.collapsed .navbar-toggler-icon::before {
+    transform: rotate(90deg);
+    top: 0;
+}
+
+.navbar-toggler.collapsed .navbar-toggler-icon::after {
+    transform: rotate(90deg);
+    top: 0;
+}
+
+.navbar-nav {
+    text-align: right;
+}
+
+.nav-link {
+    font-weight: bold;
+    color: #343a40 !important;
+}
+
+.nav-item {
+    position: relative;
+    border-bottom: 3px solid #dee2e6;
+    min-width: 200px;
+}
+
+.nav-item:last-child {
+    border-bottom: none;
+}
+
+/* Submenu style */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 10px 0;
+    z-index: 1000;
+    list-style: none; /* Remove bullet points */
+    padding-left: 0;  /* Remove padding */
+}
+
+.submenu .nav-link {
+    padding: 10px 20px;
+    color: #343a40 !important;
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+.nav-item:hover .submenu {
+    display: block;
+}
+
+@media (max-width: 992px) {
+    .submenu {
+        position: relative;
+        top: 0;
+        border: none;
+        padding: 0;
+        margin-right: 20px;
+    }
+
+    .submenu .nav-link {
+        padding: 10px 10px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .nav-item .submenu {
+        display: none;
+    }
+
+    .nav-item.open .submenu {
+        display: block;
+    }
+
+    .nav-item .submenu {
+        display: none;
+    }
+
+    .nav-item.open > .submenu {
+        display: block;
+    }
+
+    .nav-item > .nav-link::after {
+        content: '\f107'; /* FontAwesome down arrow */
+        font-family: 'FontAwesome';
+        float: left;
+        margin-left: 10px;
+    }
+
+    .nav-item.open > .nav-link::after {
+        content: '\f106'; /* FontAwesome up arrow */
+    }
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-brand img {
+    height:50px;
+    margin-right: 0px;
+}
+
+.navbar-nav .nav-link {
+    margin-left: 20px;
+}

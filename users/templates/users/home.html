@@ -2,12 +2,17 @@
 {% block title %} Home Page {% endblock title%}
 {% block content %}
     <div class="jumbotron">
-        <h1 class="display-4"><center>خوش آمدید, {{user.first_name.title|default:'مهمان'}}</center></h1>
+        <h1 class="display-4"><center>خوش آمدید, {{user.profile.first_name|default:'مهمان'}}</center></h1>
         <p class="lead"><center>این سایت مختص <b>شرکت سکه طلا</b> با هدف استفاده از ابزار های توسعه یافته توسط شرکت میباشد </center></p>
         <hr class="my-4">
         <p class="lead"><center>
             {% if user.is_authenticated %}
-                <a class="btn btn-primary btn-lg" href="{% url 'logout' %}" role="button">Logout</a>
+                <form id="logout-form" method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg">Logout</button>
+                    <!-- <a class="btn btn-primary btn-lg" href="/logout" role="button">Logout</a> -->
+
+                </form>
             {% else %}
                 <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button"> ورود</center></a>
             {% endif %}
